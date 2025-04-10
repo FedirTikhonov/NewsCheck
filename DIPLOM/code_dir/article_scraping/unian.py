@@ -24,7 +24,7 @@ def convert_to_iso(timestamp):
     return dt.strftime("%Y-%m-%dT%H:%M:00+03:00")
 
 
-def scrape_unian():
+def scrape_unian(scraping_delay=0.25):
     chrome_options = Options()
     chrome_options.add_argument("--headless")
     chrome_options.add_argument("--disable-gpu")
@@ -67,23 +67,27 @@ def scrape_unian():
                     sources.append(source_url)
         if href is not None and timestamp is not None and title is not None and paragraphs_list is not None and sources is not None:
             paragraphs_list.remove(paragraphs_list[0])
-            article_data.append({
-                'href': href,
-                'timestamp': timestamp,
-                'title': title,
-                'paragraphs': paragraphs_list,
-                'sources': sources
-            })
-    for article in article_data:
-        timestamp = article['timestamp']
-        article_time = dateutil.parser.isoparse(timestamp)
-        current_time = datetime.now(timezone.utc)
-        one_hour_ago = current_time - timedelta(hours=1)
-        if article_time >= one_hour_ago:
-            with open(f'unian_articles/{article["timestamp"]}.json', 'w', encoding='utf-8') as f:
-                json.dump(article, f, ensure_ascii=False, indent=4)
-        # Implement the mechanism to check if the atricle has already been scraped
+            article_time = dateutil.parser.isoparse(timestamp)
+            current_time = datetime.now(timezone.utc)
+            one_hour_ago = current_time - timedelta(hours=scraping_delay)
+            if article_time >= one_hour_ago:
+                article_data.append({
+                    'outlet': 'unian',
+                    'href': href,
+                    'timestamp': timestamp,
+                    'title': title,
+                    'paragraphs': paragraphs_list,
+                    'sources': sources
+                })
+            else:
+                return article_data
 
 
 if __name__ == "__main__":
-    scrape_unian()
+    start = time.time()
+    article_list = scrape_unian()
+    for article in article_list:
+        print(article['timestamp'])
+    end = time.time()
+    print(end - start)
+

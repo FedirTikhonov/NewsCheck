@@ -2,14 +2,14 @@ from selenium import webdriver
 import os
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
-import json
 import requests
 from bs4 import BeautifulSoup
 from datetime import datetime, timezone, timedelta
 import dateutil.parser
+import time
 
 
-def scrape_svoboda():
+def scrape_radiosvoboda(scraping_delay=0.25):
     chrome_options = Options()
     chrome_options.add_argument("--headless")  # Run in headless mode
     chrome_options.add_argument("--disable-gpu")  # Recommended for headless
@@ -49,23 +49,27 @@ def scrape_svoboda():
                 if source_url:
                     sources.append(source_url)
         if href is not None and timestamp is not None and title is not None and paragraphs_text is not None and sources is not None:
-            article_data.append({
-                'href': href,
-                'timestamp': timestamp,
-                'title': title,
-                'paragraphs': paragraphs_text,
-                'sources': sources
-            })
-    for article in article_data:
-        timestamp = article['timestamp']
-        article_time = dateutil.parser.isoparse(timestamp)
-        current_time = datetime.now(timezone.utc)
-        one_hour_ago = current_time - timedelta(hours=1)
-        if article_time >= one_hour_ago:
-            with open(f'radiosvoboda_articles/{article["timestamp"]}.json', 'w', encoding='utf-8') as f:
-                json.dump(article, f, ensure_ascii=False, indent=4)
+            article_time = dateutil.parser.isoparse(timestamp)
+            current_time = datetime.now(timezone.utc)
+            one_hour_ago = current_time - timedelta(hours=scraping_delay)
+            if article_time >= one_hour_ago:
+                article_data.append({
+                    'outlet': 'radiosvoboda',
+                    'href': href,
+                    'timestamp': timestamp,
+                    'title': title,
+                    'paragraphs': paragraphs_text,
+                    'sources': sources
+                })
+            else:
+                return article_data
     # Implement the mechanism to check if the atricle has already been scraped
 
 
 if __name__ == "__main__":
-    scrape_svoboda()
+    start = time.time()
+    article_list = scrape_radiosvoboda(scraping_delay=0.25)
+    for article in article_list:
+        print(article['timestamp'])
+    end = time.time()
+    print(end - start)

@@ -6,6 +6,7 @@ import json
 from bs4 import BeautifulSoup
 from datetime import datetime, timezone, timedelta
 import dateutil.parser
+import time
 
 
 def month_verbal_to_num(month: str):
@@ -47,7 +48,7 @@ def espreso_to_ISO(date: str):
     return iso_format
 
 
-def scrape_espreso():
+def scrape_espreso(scraping_delay=0.25):
     chrome_options = Options()
     chrome_options.add_argument("--headless")  # Run in headless mode
     chrome_options.add_argument("--disable-gpu")  # Recommended for headless
@@ -109,24 +110,25 @@ def scrape_espreso():
             except Exception as e:
                 pass
         if href is not None and timestamp is not None and title is not None and paragraphs_text is not None and sources is not None:
-            article_data.append({
-                'href': href,
-                'timestamp': timestamp,
-                'title': title,
-                'paragraphs': paragraphs_text,
-                'sources': sources
-            })
-    for article in article_data:
-        timestamp = article['timestamp']
-        article_time = dateutil.parser.isoparse(timestamp)
-
-        current_time = datetime.now(timezone.utc)
-        one_hour_ago = current_time - timedelta(hours=1)
-        if article_time >= one_hour_ago:
-            with open(f'espreso_articles/{article["timestamp"]}.json', 'w', encoding='utf-8') as f:
-                json.dump(article, f, ensure_ascii=False, indent=4)
+            article_time = dateutil.parser.isoparse(timestamp)
+            current_time = datetime.now(timezone.utc)
+            one_hour_ago = current_time - timedelta(hours=scraping_delay)
+            if article_time >= one_hour_ago:
+                article_data.append({
+                    'outlet': 'espreso',
+                    'href': href,
+                    'timestamp': timestamp,
+                    'title': title,
+                    'paragraphs': paragraphs_text,
+                    'sources': sources
+                })
+            else:
+                return article_data
     # Implement the mechanism to check if the atricle has already been scraped
 
 
 if __name__ == "__main__":
-    scrape_espreso(implicit=True)
+    start = time.time()
+    print(scrape_espreso(scraping_delay=0.25))
+    end = time.time()
+    print(end - start)

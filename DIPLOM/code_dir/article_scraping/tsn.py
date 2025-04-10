@@ -1,12 +1,13 @@
-import json
 import requests
 from bs4 import BeautifulSoup
 from datetime import datetime, timezone, timedelta
 import dateutil.parser
+import time
 
 
-def scrape_tsn():
+def scrape_tsn(scraping_delay=0.25):
     links = ['https://tsn.ua/news', 'https://tsn.ua/news/page-2']
+    print(scraping_delay)
     article_hrefs = []
     for link in links:
         page = requests.get(link)
@@ -41,24 +42,28 @@ def scrape_tsn():
                 source_url = link['href']
                 if source_url:
                     sources.append(source_url)
-        if href is not None and timestamp is not None and title is not None and paragraphs_list is not None and sources is not None:
+        article_time = dateutil.parser.isoparse(timestamp)
+        current_time = datetime.now(timezone.utc)
+        one_hour_ago = current_time - timedelta(hours=scraping_delay)
+        if article_time >= one_hour_ago:
             article_data.append({
+                'outlet': 'tsn',
                 'href': href,
                 'timestamp': timestamp,
                 'title': title,
                 'paragraphs': paragraphs_list,
                 'sources': sources
             })
-    for article in article_data:
-        timestamp = article['timestamp']
-        article_time = dateutil.parser.isoparse(timestamp)
-        current_time = datetime.now(timezone.utc)
-        one_hour_ago = current_time - timedelta(hours=1)
-        if article_time >= one_hour_ago:
-            with open(f'tsn_articles/{article["timestamp"]}.json', 'w', encoding='utf-8') as f:
-                json.dump(article, f, ensure_ascii=False, indent=4)
-        # Implement the mechanism to check if the atricle has already been scraped
+        else:
+            return article_data
+    return article_data
+    # Implement the mechanism to check if the atricle has already been scraped
 
 
 if __name__ == "__main__":
-    scrape_tsn()
+    start = time.time()
+    article_list = scrape_tsn(scraping_delay=0.25)
+    for article in article_list:
+        print(article['timestamp'])
+    end = time.time()
+    print(end - start)

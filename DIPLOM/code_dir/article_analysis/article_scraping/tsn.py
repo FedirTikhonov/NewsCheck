@@ -7,7 +7,6 @@ import time
 
 def scrape_tsn(scraping_delay=0.25):
     links = ['https://tsn.ua/news', 'https://tsn.ua/news/page-2']
-    print(scraping_delay)
     article_hrefs = []
     for link in links:
         page = requests.get(link)
@@ -57,7 +56,6 @@ def scrape_tsn(scraping_delay=0.25):
         else:
             return article_data
     return article_data
-    # Implement the mechanism to check if the atricle has already been scraped
 
 
 if __name__ == "__main__":

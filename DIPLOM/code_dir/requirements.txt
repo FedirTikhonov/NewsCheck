@@ -1,0 +1,7 @@
+openai
+pymilvus
+sqlalchemy
+pydantic
+requests
+bs4
+selenium

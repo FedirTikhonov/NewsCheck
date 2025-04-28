@@ -19,3 +19,6 @@ DIPLOM/.idea/misc.xml
 DIPLOM/code_dir/article_analysis/article_scraping/__pycache__/unian.cpython-312.pyc
 /DIPLOM/code_dir/article_analysis/article_scraping/__pycache__
 .DS_Store
+/DIPLOM/code_dir/article_analysis/__pycache__
+DIPLOM/code_dir/.env
+/DIPLOM/code_dir/article_analysis/milvus_db/volumes

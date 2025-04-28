@@ -5,3 +5,6 @@ pydantic
 requests
 bs4
 selenium
+voyageai
+tiktoken
+langchain_voyageai

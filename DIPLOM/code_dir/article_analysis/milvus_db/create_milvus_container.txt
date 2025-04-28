@@ -1,0 +1,2 @@
+FROM THE milvus_db DIRECTORY:
+docker compose -f milvus-standalone-docker-compose.yml up

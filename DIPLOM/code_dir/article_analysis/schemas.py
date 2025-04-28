@@ -31,7 +31,6 @@ class Clickbbaitness(BaseModel):
 
 
 class MetricSchema(BaseModel):
-    article_id: int
     credibility_rating: Credibility
     emotionality_rating: Emotionality
     factuality_rating: Factuality

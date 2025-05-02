@@ -35,3 +35,21 @@ class MetricSchema(BaseModel):
     emotionality_rating: Emotionality
     factuality_rating: Factuality
     clickbbaitness_rating: Clickbbaitness
+
+
+class MainArticleSchema(BaseModel):
+    article_text: str
+
+
+class SimilarArticleSchema(BaseModel):
+    article_id: int
+    article_text: str
+
+
+class SameIssueArticleSchema(BaseModel):
+    main_article: MainArticleSchema
+    similar_articles: List[SimilarArticleSchema]
+
+
+class SameIssueArticleResponseSchema(BaseModel):
+    ids: List[int]

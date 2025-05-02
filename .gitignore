@@ -22,3 +22,7 @@ DIPLOM/code_dir/article_analysis/article_scraping/__pycache__/unian.cpython-312.
 /DIPLOM/code_dir/article_analysis/__pycache__
 DIPLOM/code_dir/.env
 /DIPLOM/code_dir/article_analysis/milvus_db/volumes
+DIPLOM/__pycache__/__init__.cpython-312.pyc
+/DIPLOM/code_dir/__pycache__
+/DIPLOM/code_dir/article_analysis/postgres_db/__pycache__
+/DIPLOM/code_dir/article_analysis/postgres_db/models/__pycache__

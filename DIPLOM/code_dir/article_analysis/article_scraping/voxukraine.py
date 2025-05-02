@@ -29,7 +29,7 @@ def scrape_voxukraine(scraping_delay=24):
         article_page = requests.get(href)
         soup = BeautifulSoup(article_page.content, "html.parser")
         title_tag = soup.find('h1', class_='underline underline--large item-title base-color')
-        title = title_tag.get_text()
+        title = title_tag.get_text().replace('\xa0', ' ').strip()
         paragraphs_list = []
         paragraph_content = soup.find('div', class_='content-wrapper')
         paragraphs = paragraph_content.find_all('p')
@@ -37,6 +37,7 @@ def scrape_voxukraine(scraping_delay=24):
         for paragraph in paragraphs:
             text = paragraph.get_text()
             text = text.replace(' ', ' ')
+            text = text.replace('\xa0', ' ')
             paragraphs_list.append(text)
             links = paragraph.find_all('a')
             for link in links:

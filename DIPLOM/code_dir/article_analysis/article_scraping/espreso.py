@@ -69,7 +69,7 @@ def scrape_espreso(scraping_delay=0.25):
         driver.get(href)
         body = driver.find_element(By.TAG_NAME, 'body')
         header_section = body.find_element(By.CLASS_NAME, 'header_current_article')
-        title = header_section.find_element(By.CLASS_NAME, 'text-title').text
+        title = header_section.find_element(By.CLASS_NAME, 'text-title').text.replace('\xa0', ' ').strip()
         time_tag = header_section.find_element(By.CLASS_NAME, 'news__author_date')
         date = time_tag.find_element(By.CLASS_NAME, 'news__author_date__date').text
         time = time_tag.find_element(By.CLASS_NAME, 'news__author_date__time').text
@@ -99,6 +99,7 @@ def scrape_espreso(scraping_delay=0.25):
             soup = BeautifulSoup(html, 'html.parser')
             text = soup.get_text()
             text = text.replace(' ', ' ').strip()
+            text = text.replace('\xa0', ' ')
             if text not in exception_texts and not text.startswith('Читайте також:') and len(text) != 0:
                 paragraphs_text.append(text)
             try:

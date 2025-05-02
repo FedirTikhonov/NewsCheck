@@ -24,16 +24,17 @@ def scrape_tsn(scraping_delay=0.25):
         article_page = requests.get(href)
         soup = BeautifulSoup(article_page.content, "html.parser")
         title_tag = soup.find('h1', class_='c-entry__title c-title c-title--h1 font-bold')
-        title = title_tag.get_text()
+        title = title_tag.get_text().replace('\xa0', ' ').strip()
         paragraphs_list = []
         main_content = soup.find('div', class_='c-prose c-post__inner')
         lead_div = soup.find_all('div', class_='c-entry__lead c-prose__lead')
-        paragraphs_list.append(lead_div[0].find('p').get_text())
+        paragraphs_list.append(lead_div[0].find('p').get_text().replace('\xa0', ' '))
         paragraphs = main_content.find_all('p', recursive=False)
         sources = []
         for paragraph in paragraphs:
             text = paragraph.get_text()
             text = text.replace(' ', ' ').strip()
+            text = text.replace('\xa0', ' ')
             if len(text) != 0 and not text.startswith('Читайте також'):
                 paragraphs_list.append(text)
             links = paragraph.find_all('a')

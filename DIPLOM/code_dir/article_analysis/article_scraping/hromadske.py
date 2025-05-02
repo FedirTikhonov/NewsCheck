@@ -17,16 +17,17 @@ def scrape_hromadske(scraping_delay=0.25):
         article_page = requests.get(href)
         soup = BeautifulSoup(article_page.content, "html.parser")
         title_tag = soup.find('h1', class_='c-heading__title')
-        title = title_tag.get_text()
+        title = title_tag.get_text().replace('\xa0', ' ').strip()
         paragraphs_list = []
         s_content = soup.find('div', class_='s-content')
         lead_div = s_content.find_all('div', class_='o-lead')
-        paragraphs_list.append(lead_div[0].find('p').get_text())
+        paragraphs_list.append(lead_div[0].find('p').get_text().replace('\xa0', ' '))
         paragraphs = s_content.find_all('p', class_='text-start')
         sources = []
         for paragraph in paragraphs:
             text = paragraph.get_text()
             text = text.replace(' ', ' ')
+            text = text.replace('\xa0', ' ')
             paragraphs_list.append(text)
             links = paragraph.find_all('a')
             for link in links:

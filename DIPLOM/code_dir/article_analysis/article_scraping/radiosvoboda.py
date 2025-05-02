@@ -30,7 +30,7 @@ def scrape_radiosvoboda(scraping_delay=0.25):
     for href in article_hrefs:
         article_page = requests.get(href)
         soup = BeautifulSoup(article_page.content, 'html.parser')
-        title = soup.find('h1', class_='title pg-title').get_text()
+        title = soup.find('h1', class_='title pg-title').get_text().replace('\xa0', ' ').strip()
         timestamp = soup.find('time')['datetime']
         paragraphs_tags = []
         article_section = soup.find('div', class_='wsw')
@@ -41,6 +41,7 @@ def scrape_radiosvoboda(scraping_delay=0.25):
         for paragraph in paragraphs_tags:
             text = paragraph.get_text()
             text = text.replace(' ', ' ').strip()
+            text = text.replace('\xa0', ' ')
             if len(text) != 0:
                 paragraphs_text.append(text)
             links = paragraph.find_all('a')

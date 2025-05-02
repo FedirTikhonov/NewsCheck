@@ -51,13 +51,14 @@ def scrape_unian(scraping_delay=0.25):
         article = driver.find_element(by=By.CLASS_NAME, value='article')
         soup = BeautifulSoup(article.get_attribute('outerHTML'), 'html.parser')
         title_tag = soup.find('h1')
-        title = title_tag.get_text()
+        title = title_tag.get_text().replace('\xa0', ' ').strip()
         paragraphs_list = []
         paragraphs = soup.find_all('p')
         sources = []
         for paragraph in paragraphs:
             text = paragraph.get_text()
             text = text.replace(' ', ' ').strip()
+            text = text.replace('\xa0', ' ')
             if len(text) != 0 and not text.startswith('Читайте також'):
                 paragraphs_list.append(text)
             links = paragraph.find_all('a')

@@ -4,10 +4,10 @@ from dotenv import load_dotenv
 from pymilvus import connections, Collection, FieldSchema, CollectionSchema, DataType, utility
 
 
-embedding_dim = 512
+EMBEDDING_DIM = 1024
 
 
-def create_collection(dim: int = embedding_dim):
+def create_collection(dim: int = EMBEDDING_DIM):
     collection_name = "vectorized_articles_collection"
     connections.connect("default", host="localhost", port="19530")
     if utility.has_collection(collection_name):
@@ -47,7 +47,7 @@ def retrieve_collection(host="localhost", port="19530", collection_name='vectori
     return collection
 
 
-def similarity_search(embeddings, embedding_type: str, top_k: int = 5):
+def similarity_search(embeddings, embedding_type: str, top_k: int = 5, threshold: float = 0.5):
     load_dotenv()
 
     collection = retrieve_collection()
@@ -56,7 +56,7 @@ def similarity_search(embeddings, embedding_type: str, top_k: int = 5):
         "index_type": "IVF_FLAT",
         "params": {"nlist": 128}
     }
-    expr = f'embedding_type == "{embedding_type}"'
+    expr = f"embedding_type == '{embedding_type}'"
 
     results = collection.search(
         data=embeddings,
@@ -64,18 +64,19 @@ def similarity_search(embeddings, embedding_type: str, top_k: int = 5):
         param=search_params,
         limit=top_k,
         expr=expr,
-        output_fields=['postgres_id', 'embedding']
+        output_fields=['postgres_id', 'embedding', 'embedding_type'],
     )
 
     similar_entries = []
     for hits in results:
         for hit in hits:
-            similar_entries.append({
-                'id': hit.id,
-                'postgres_id': hit.postgres_id,
-                'distance': hit.distance,
-                'embedding_type': hit.embedding_type,
-            })
+            if hit.distance > threshold:
+                similar_entries.append({
+                    'id': hit.id,
+                    'postgres_id': hit.postgres_id,
+                    'similarity_score': hit.distance,
+                    'embedding_type': hit.embedding_type,
+                })
     return similar_entries
 
 
@@ -92,4 +93,4 @@ def insert_article(postgres_id: int, embedding: list, embedding_type: str):
 
 
 if __name__ == '__main__':
-    create_collection(dim=512)
+    create_collection()

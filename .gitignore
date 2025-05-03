@@ -26,3 +26,5 @@ DIPLOM/__pycache__/__init__.cpython-312.pyc
 /DIPLOM/code_dir/__pycache__
 /DIPLOM/code_dir/article_analysis/postgres_db/__pycache__
 /DIPLOM/code_dir/article_analysis/postgres_db/models/__pycache__
+/DIPLOM/code_dir/article_analysis/milvus_db/__pycache__
+/DIPLOM/code_dir/article_analysis/utils/__pycache__

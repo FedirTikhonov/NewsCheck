@@ -5,7 +5,7 @@ from datetime import datetime, timezone, timedelta
 import dateutil.parser
 
 
-def scrape_stopfake(scraping_delay=24):
+def scrape_stopfake(scraping_delay=48):
     page = requests.get("https://www.stopfake.org/uk/category/context-ua/")
     soup = BeautifulSoup(page.content, "html.parser")
     feed_list = soup.find("div", class_='td-ss-main-content')
@@ -47,8 +47,9 @@ def scrape_stopfake(scraping_delay=24):
                 })
             else:
                 return article_data
-        # Implement the mechanism to check if the atricle has already been scraped
 
 
 if __name__ == "__main__":
-    print(scrape_stopfake())
+    articles = scrape_stopfake(scraping_delay=10000)
+    with open('stopfake.json', 'w') as outfile:
+        json.dump(articles, outfile)

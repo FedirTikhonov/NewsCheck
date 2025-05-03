@@ -34,7 +34,7 @@ class MetricSchema(BaseModel):
     credibility_rating: Credibility
     emotionality_rating: Emotionality
     factuality_rating: Factuality
-    clickbbaitness_rating: Clickbbaitness
+    clickbaitness_rating: Clickbbaitness
 
 
 class MainArticleSchema(BaseModel):
@@ -52,4 +52,8 @@ class SameIssueArticleSchema(BaseModel):
 
 
 class SameIssueArticleResponseSchema(BaseModel):
+    ids: List[int]
+
+
+class CategoryResponseSchema(BaseModel):
     ids: List[int]

@@ -28,14 +28,14 @@ class Article(Base):
                                    foreign_keys="RecommendedArticle.source_article_id",
                                    back_populates="source_article")
     similar_to = relationship("SameIssueArticle",
-                              foreign_keys="SameIssueArticle.similar_article_id",
+                              foreign_keys="SameIssueArticle.same_issue_article_id",
                               back_populates="similar_article")
     main_articles = relationship("SameIssueArticle",
                                  foreign_keys="SameIssueArticle.main_article_id",
                                  back_populates="main_article")
 
     def add_paragraph(self, paragraph_text, paragraph_num=None):
-        from .Paragraph import Paragraph  # Import here to avoid circular imports
+        from .Paragraph import Paragraph
 
         if paragraph_num is None:
             existing_count = len(self.paragraphs)
@@ -46,7 +46,7 @@ class Article(Base):
         return paragraph
 
     def add_source(self, source_href, source_num=None):
-        from .Source import Source  # Import here to avoid circular imports
+        from .Source import Source
 
         if source_num is None:
             existing_count = len(self.sources)
@@ -60,14 +60,14 @@ class Article(Base):
         from .Metric import Metric  # Import here to avoid circular imports
 
         metric = Metric(
-            credibility_score=metric['credibility_score'],
-            credibility_reason=metric['credibility_reason'],
-            clickbaitness_score=metric['clickbaitness_score'],
-            clickbaitness_reason=metric['clickbaitness_reason'],
-            factuality_score=metric['factuality_score'],
-            factuality_reason=metric['factuality_reason'],
-            emotionality_score=metric['emotionality_score'],
-            emotionality_reason=metric['emotionality_reason'],
+            credibility_score=metric['credibility_rating']['rating'],
+            credibility_reason=metric['credibility_rating']['explanation'],
+            clickbaitness_score=metric['clickbaitness_rating']['rating'],
+            clickbaitness_reason=metric['clickbaitness_rating']['explanation'],
+            factuality_score=metric['factuality_rating']['rating'],
+            factuality_reason=metric['factuality_rating']['explanation'],
+            emotionality_score=metric['emotionality_rating']['rating'],
+            emotionality_reason=metric['emotionality_rating']['explanation'],
             article_id=self.id
         )
         self.metric = metric
@@ -77,7 +77,7 @@ class Article(Base):
         self.status = 'processed'
 
     def add_recommendation(self, recommended_article_dict):
-        from .RecommendedArticle import RecommendedArticle  # Import here to avoid circular imports
+        from .RecommendedArticle import RecommendedArticle
 
         recommendation_for_article = RecommendedArticle(
             last_updated=recommended_article_dict['last_updated'],
@@ -89,7 +89,7 @@ class Article(Base):
         return recommendation_for_article
 
     def add_same_issue_article(self, same_issue_article_dict):
-        from .SameIssueArticle import SameIssueArticle  # Import here to avoid circular imports
+        from .SameIssueArticle import SameIssueArticle
 
         original_article = SameIssueArticle(
             created_at=same_issue_article_dict['last_updated'],
@@ -99,5 +99,15 @@ class Article(Base):
         )
         self.main_articles.append(original_article)
         return original_article
+
+    def add_factcheck_category(self, category_id: int):
+        from .FactCheckCategory import FactcheckCategory
+
+        factcheck_category = FactcheckCategory(
+            category_id=category_id,
+            article_id=self.id,
+        )
+
+        self.categories.append(factcheck_category)
 
 

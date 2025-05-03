@@ -12,9 +12,7 @@ class FactcheckCategory(Base):
     category_id = Column(Integer, ForeignKey('category.id'))
     article_id = Column(Integer, ForeignKey('article.id'))
 
-    # Relationships
     category = relationship("Category", back_populates="articles")
     article = relationship("Article", back_populates="categories")
 
-    # Unique constraint
     __table_args__ = (UniqueConstraint('category_id', 'article_id'),)

@@ -19,4 +19,4 @@ class SameIssueArticle(Base):
     similar_article = relationship("Article", foreign_keys=[same_issue_article_id], back_populates="similar_to")
 
     # Unique constraint
-    __table_args__ = (UniqueConstraint('main_article_id', 'similar_article_id'),)
+    __table_args__ = (UniqueConstraint('main_article_id', 'same_issue_article_id'),)

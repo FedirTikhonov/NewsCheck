@@ -2,12 +2,14 @@ import openai
 import json
 import time
 import tiktoken
+import os
+from dotenv import load_dotenv
 
 
-def generate_metric(article: dict,
-                    client: openai.OpenAI,
-                    assistant,
-                    verbose=False):
+def message_llm(article: dict,
+                client: openai.OpenAI,
+                assistant,
+                verbose=False):
 
     encoding = tiktoken.encoding_for_model('gpt-4o-mini')
     num_tokens = len(encoding.encode(json.dumps(article)))
@@ -40,53 +42,20 @@ def generate_metric(article: dict,
     return json.loads(result)
 
 
-def find_same_issue_articles_with_llm(client: openai.OpenAI,
-                                      assistant,
-                                      request_body: dict):
-    thread = client.beta.threads.create(
-        messages=[
-            {
-                "role": "user",
-                "content": json.dumps(request_body),
-            }
-        ]
-    )
-
-    with client.beta.threads.runs.stream(
-            thread_id=thread.id,
-            assistant_id=assistant.id,
-    ) as stream:
-        stream.until_done()
-
-    messages = client.beta.threads.messages.list(thread_id=thread.id)
-    result = messages.data[0].content[0].text.value
-    client.beta.threads.delete(thread_id=thread.id)
-
-    return json.loads(result)['ids']
+def delete_all_assistants(client: openai.OpenAI):
+    while True:
+        assistants = json.loads(client.beta.assistants.list().model_dump_json())['data']
+        if assistants:
+            return
+        for assistant in assistants:
+            print(assistant)
+            try:
+                client.beta.assistants.delete(assistant_id=assistant['id'])
+            except:
+                return
 
 
-def categorize_article(request_body: dict, client: openai.OpenAI, assistant):
-    thread = client.beta.threads.create(
-        messages=[
-            {
-                "role": "user",
-                "content": json.dumps(request_body),
-            }
-        ]
-    )
-
-    with client.beta.threads.runs.stream(
-            thread_id=thread.id,
-            assistant_id=assistant.id,
-    ) as stream:
-        stream.until_done()
-
-    messages = client.beta.threads.messages.list(thread_id=thread.id)
-    result = messages.data[0].content[0].text.value
-    client.beta.threads.delete(thread_id=thread.id)
-
-    return json.loads(result)['category']
-
-
-
-
+if __name__ == '__main__':
+    load_dotenv()
+    client = openai.OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
+    delete_all_assistants(client)

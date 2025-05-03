@@ -3,19 +3,19 @@ import requests
 from bs4 import BeautifulSoup
 from datetime import datetime, timezone, timedelta
 import dateutil.parser
-from .espreso import month_verbal_to_num
+from DIPLOM.code_dir.article_analysis.article_scraping.espreso import month_verbal_to_num
 
 
 def voxukraine_to_ISO(date: str):
     date_lst = date.split(sep=' ')
-    day = date_lst[0]
+    day = date_lst[0].zfill(2)
     month = month_verbal_to_num(date_lst[1])
     year = date_lst[2]
     iso_format = f'{year}-{month}-{day}T00:00:00+03:00'
     return iso_format
 
 
-def scrape_voxukraine(scraping_delay=24):
+def scrape_voxukraine(scraping_delay=48):
     page = requests.get("https://voxukraine.org/category/voks-informue")
     soup = BeautifulSoup(page.content, "html.parser")
     feed_list = soup.find("div", class_="posts-wrapper d-flex flex-column flex-md-row justify-content-between justify-content-lg-start flex-md-wrap")
@@ -60,7 +60,6 @@ def scrape_voxukraine(scraping_delay=24):
                 })
             else:
                 return article_data
-        # Implement the mechanism to check if the atricle has already been scraped
 
 
 if __name__ == "__main__":

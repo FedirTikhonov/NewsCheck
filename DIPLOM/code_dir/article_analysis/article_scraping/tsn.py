@@ -28,7 +28,8 @@ def scrape_tsn(scraping_delay=0.25):
         paragraphs_list = []
         main_content = soup.find('div', class_='c-prose c-post__inner')
         lead_div = soup.find_all('div', class_='c-entry__lead c-prose__lead')
-        paragraphs_list.append(lead_div[0].find('p').get_text().replace('\xa0', ' '))
+        if lead_div:
+            paragraphs_list.append(lead_div[0].find('p').get_text().replace('\xa0', ' '))
         paragraphs = main_content.find_all('p', recursive=False)
         sources = []
         for paragraph in paragraphs:
@@ -63,6 +64,6 @@ if __name__ == "__main__":
     start = time.time()
     article_list = scrape_tsn(scraping_delay=0.25)
     for article in article_list:
-        print(article['timestamp'])
+        print(article['title'])
     end = time.time()
     print(end - start)

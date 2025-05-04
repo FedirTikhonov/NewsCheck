@@ -118,18 +118,18 @@ def generate_analysis(articles_lst: List, verbose=False, return_values=True):
             category_ids = categorize_articles(article=scraped_article, assistant=category_article_assistant, openai_client=openai_client)
             for category_id in category_ids:
                 article.add_factcheck_category(category_id)
+
         article.mark_processed()
         session.add(article)
         session.commit()
         session.close()
+
     openai_client.beta.assistants.delete(assistant_id=metric_assistant.id)
     openai_client.beta.assistants.delete(assistant_id=same_issue_article_assistant.id)
     openai_client.beta.assistants.delete(assistant_id=category_article_assistant.id)
 
 
 if __name__ == '__main__':
-    articles = scrape_news()
-    articles = [[article for article in articles if article['outlet'] in ['voxukraine', 'stopfake']]]
-    print(len(articles[0]))
+    articles = [scrape_news()]
     generate_analysis(articles, verbose=True)
 

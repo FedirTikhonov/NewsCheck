@@ -4,10 +4,10 @@ import voyageai
 import datetime
 import dateutil.parser
 
-from DIPLOM.code_dir.article_analysis.milvus_db.utils import similarity_search, insert_article
-from DIPLOM.code_dir.article_analysis.postgres_db.models.Article import Article
-from DIPLOM.code_dir.article_analysis.postgres_db.models.Paragraph import Paragraph
-from DIPLOM.code_dir.article_analysis.utils.llm_requests import message_llm
+from DIPLOM.backend.article_analysis.milvus_db.utils import similarity_search, insert_article
+from DIPLOM.backend.article_analysis.postgres_db.models.Article import Article
+from DIPLOM.backend.article_analysis.postgres_db.models.Paragraph import Paragraph
+from DIPLOM.backend.article_analysis.utils.llm_requests import message_llm
 
 EMBEDDING_DIM = 1024
 

@@ -8,12 +8,12 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
 
-from DIPLOM.code_dir.article_analysis.utils.llm_requests import message_llm
-from DIPLOM.code_dir.article_analysis.utils.schemas import MetricSchema, SameIssueArticleResponseSchema, CategoryResponseSchema
-from DIPLOM.code_dir.article_analysis.utils.semantic_analysis import generate_recommendations, find_same_issue_articles, \
+from DIPLOM.backend.article_analysis.utils.llm_requests import message_llm
+from DIPLOM.backend.article_analysis.utils.schemas import MetricSchema, SameIssueArticleResponseSchema, CategoryResponseSchema
+from DIPLOM.backend.article_analysis.utils.semantic_analysis import generate_recommendations, find_same_issue_articles, \
     categorize_articles
-from DIPLOM.code_dir.article_analysis.article_scraping.scraping import scrape_news
-from DIPLOM.code_dir.article_analysis.postgres_db.models.Article import Article
+from DIPLOM.backend.article_analysis.article_scraping.scraping import scrape_news
+from DIPLOM.backend.article_analysis.postgres_db.models.Article import Article
 
 
 EMBEDDING_DIM = 512

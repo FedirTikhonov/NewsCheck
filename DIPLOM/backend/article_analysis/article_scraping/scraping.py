@@ -1,4 +1,4 @@
-from DIPLOM.code_dir.article_analysis.article_scraping.espreso import scrape_espreso
+from DIPLOM.backend.article_analysis.article_scraping.espreso import scrape_espreso
 from .hromadske import scrape_hromadske
 from .radiosvoboda import scrape_radiosvoboda
 from .tsn import scrape_tsn

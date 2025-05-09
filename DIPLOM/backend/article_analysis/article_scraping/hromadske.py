@@ -52,4 +52,4 @@ def scrape_hromadske(scraping_delay=0.25):
 
 
 if __name__ == "__main__":
-    print(scrape_hromadske())
+    print(scrape_hromadske(scraping_delay=0.5))

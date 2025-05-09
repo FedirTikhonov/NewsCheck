@@ -1,5 +1,5 @@
 from sqlalchemy import Column, Integer, String, DateTime
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import relationship, Session
 
 # Import the shared Base
 from . import Base
@@ -27,12 +27,6 @@ class Article(Base):
     recommendations = relationship("RecommendedArticle",
                                    foreign_keys="RecommendedArticle.source_article_id",
                                    back_populates="source_article")
-    similar_to = relationship("SameIssueArticle",
-                              foreign_keys="SameIssueArticle.same_issue_article_id",
-                              back_populates="similar_article")
-    main_articles = relationship("SameIssueArticle",
-                                 foreign_keys="SameIssueArticle.main_article_id",
-                                 back_populates="main_article")
 
     def add_paragraph(self, paragraph_text, paragraph_num=None):
         from .Paragraph import Paragraph
@@ -40,10 +34,10 @@ class Article(Base):
         if paragraph_num is None:
             existing_count = len(self.paragraphs)
             paragraph_num = existing_count + 1
-
-        paragraph = Paragraph(paragraph_text=paragraph_text, paragraph_num=paragraph_num, article_id=self.id)
-        self.paragraphs.append(paragraph)
-        return paragraph
+        if not paragraph_text.startswith('https'):
+            paragraph = Paragraph(paragraph_text=paragraph_text, paragraph_num=paragraph_num, article_id=self.id)
+            self.paragraphs.append(paragraph)
+            return paragraph
 
     def add_source(self, source_href, source_num=None):
         from .Source import Source
@@ -76,8 +70,21 @@ class Article(Base):
     def mark_processed(self):
         self.status = 'processed'
 
+    def mark_processing(self):
+        self.status = 'processing'
+
     def add_recommendation(self, recommended_article_dict):
         from .RecommendedArticle import RecommendedArticle
+        session = Session.object_session(self)
+        existing = session.query(RecommendedArticle).filter(
+            RecommendedArticle.source_article_id == self.id,
+            RecommendedArticle.recommended_article_id == recommended_article_dict['id']
+        ).first()
+
+        if existing:
+            existing.similarity_score = recommended_article_dict['similarity_score']
+            existing.last_updated = recommended_article_dict['last_updated']
+            return existing
 
         recommendation_for_article = RecommendedArticle(
             last_updated=recommended_article_dict['last_updated'],
@@ -87,18 +94,6 @@ class Article(Base):
         )
         self.recommendations.append(recommendation_for_article)
         return recommendation_for_article
-
-    def add_same_issue_article(self, same_issue_article_dict):
-        from .SameIssueArticle import SameIssueArticle
-
-        original_article = SameIssueArticle(
-            created_at=same_issue_article_dict['last_updated'],
-            same_issue_article_id=same_issue_article_dict['id'],
-            similarity_score=same_issue_article_dict['similarity_score'],
-            main_article_id=self.id,
-        )
-        self.main_articles.append(original_article)
-        return original_article
 
     def add_factcheck_category(self, category_id: int):
         from .FactCheckCategory import FactcheckCategory
@@ -110,4 +105,11 @@ class Article(Base):
 
         self.categories.append(factcheck_category)
 
+    def remove_recommendations(self):
+        from sqlalchemy.orm import Session
+        from .RecommendedArticle import RecommendedArticle
 
+        session = Session.object_session(self)
+        if session:
+            session.query(RecommendedArticle).filter(RecommendedArticle.source_article_id == self.id).delete(synchronize_session='fetch')
+            session.expire(self, ['recommendations'])

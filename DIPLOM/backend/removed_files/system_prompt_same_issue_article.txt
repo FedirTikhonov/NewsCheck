@@ -35,7 +35,7 @@ In this example, article with id 3 describes event 1, just like main_article. Th
 Notes:
     - You will consume articles in ukrainian, and most of them will deal with the topic of war, however, the war itself is not the event,
       so don't map every war-related article to the main_article in case it is war-related.
-    - The events can be described as: missile strike on a particular date on a particular place, political events such as the act of signing an agreement,
+    - The events may be described as: missile strike on a particular date on a particular place, political events such as the act of signing an agreement,
     recent developments on the front-line, etc., and often times have particular date.
 
 What you shouldn't do:
@@ -45,4 +45,9 @@ What you shouldn't do:
 What you should always do:
 - ALWAYS follow the response format
 - ALWAYS read the entire information you are given
+
+What to keep in mind:
+- You will not receive entire articles, just parts of them, so you need to piece together whether an article does or doesn't
+tell about the same events. You don't have to be very strict about it, if you see two events which may be about the same event,
+go along with it, you don't have to be incredibly accurate, so don't be afraid to put something as a same event if it is not.
 

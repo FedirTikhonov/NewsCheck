@@ -33,7 +33,7 @@ def message_llm(article: dict,
 
     if verbose:
         end_time = time.time()
-        print(f'Metric generation time: {end_time - start_time} seconds')
+        print(f'Response generation time: {end_time - start_time} seconds')
 
     messages = client.beta.threads.messages.list(thread_id=thread.id)
     result = messages.data[0].content[0].text.value

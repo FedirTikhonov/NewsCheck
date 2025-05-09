@@ -125,7 +125,6 @@ def scrape_espreso(scraping_delay=0.25):
                 })
             else:
                 return article_data
-    # Implement the mechanism to check if the atricle has already been scraped
 
 
 if __name__ == "__main__":

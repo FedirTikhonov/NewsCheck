@@ -30,7 +30,7 @@ CREATE TABLE source(
 
 CREATE TABLE paragraph(
     id SERIAL PRIMARY KEY,
-    paragraph_text VARCHAR(1023),
+    paragraph_text VARCHAR(2047),
     paragraph_num SMALLINT,
     article_id INT REFERENCES article(id) ON DELETE CASCADE
 );
@@ -57,15 +57,20 @@ CREATE TABLE recommended_article (
     UNIQUE (source_article_id, recommended_article_id)
 );
 
-CREATE TABLE same_issue_article (
+CREATE TABLE weekly_report(
     id SERIAL PRIMARY KEY,
-    main_article_id INT REFERENCES article(id) ON DELETE CASCADE,
-    similar_article_id INT REFERENCES article(id) ON DELETE CASCADE,
-    similarity_score FLOAT,
-    created_at TIMESTAMPTZ,
-    UNIQUE (main_article_id, similar_article_id)
+    digest_text TEXT,
+    digest_date DATE
 );
 
+CREATE TABLE weekly_stats(
+    id SERIAL PRIMARY KEY,
+    category_id INT REFERENCES category(id) ON DELETE CASCADE,
+    category_num INT,
+    date DATE
+);
+
+INSERT INTO category(name, description) VALUES('Маніпуляції з військовими діями та втратами', 'Дезінформація про перебіг бойових дій, втрати сторін, стан військових підрозділів та процеси обміну полоненими з метою створення викривленої картини війни.');
 INSERT INTO category(name, description) VALUES('Виправдання російської агресії', 'Спроби легітимізувати військові злочини РФ через фальшиві пояснення ракетних ударів по цивільних об''єктах, атак на мирне населення та початку війни загалом.');
 INSERT INTO category(name, description) VALUES('Маніпуляції з політичними процесами', 'Викривлення інформації про політичних лідерів, виборчі процеси, міжнародні відносини та спроби легітимізації окупаційної влади на захоплених територіях.');
 INSERT INTO category(name, description) VALUES('Дезінформація про міжнародну підтримку України', 'Фальсифікація даних про обсяги військової та економічної допомоги Україні, намагання дискредитувати міжнародну підтримку та створити враження її неефективності.');

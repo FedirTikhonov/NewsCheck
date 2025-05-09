@@ -14,3 +14,4 @@ class Category(Base):
 
     # Relationships
     articles = relationship("FactcheckCategory", back_populates="category")
+    weekly_stats = relationship("WeeklyStats", back_populates="categories")

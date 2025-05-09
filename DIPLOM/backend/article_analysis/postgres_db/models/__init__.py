@@ -8,8 +8,10 @@ from .FactCheckCategory import FactcheckCategory
 from .Metric import Metric
 from .Paragraph import Paragraph
 from .RecommendedArticle import RecommendedArticle
-from .SameIssueArticle import SameIssueArticle
 from .Source import Source
+from .WeeklyStats import WeeklyStats
+from .WeeklyReport import WeeklyReport
+
 
 __all__ = [
     'Article',
@@ -18,6 +20,7 @@ __all__ = [
     'Metric',
     'Paragraph',
     'RecommendedArticle',
-    'SameIssueArticle',
-    'Source'
+    'Source',
+    'WeeklyReport',
+    'WeeklyStats'
 ]

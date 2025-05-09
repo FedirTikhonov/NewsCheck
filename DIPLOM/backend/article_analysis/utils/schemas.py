@@ -57,3 +57,7 @@ class SameIssueArticleResponseSchema(BaseModel):
 
 class CategoryResponseSchema(BaseModel):
     ids: List[int]
+
+
+class DigestTextResponseSchema(BaseModel):
+    digest_text: str

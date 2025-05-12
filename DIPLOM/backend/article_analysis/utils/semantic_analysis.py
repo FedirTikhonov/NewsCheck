@@ -1,13 +1,9 @@
 import openai
-import sqlalchemy.orm.session
 import voyageai
 import datetime
-import dateutil.parser
 
-from DIPLOM.backend.article_analysis.milvus_db.utils import similarity_search, insert_article, retrieve_vector_by_ids
-from DIPLOM.backend.article_analysis.postgres_db.models.Article import Article
-from DIPLOM.backend.article_analysis.postgres_db.models.Paragraph import Paragraph
-from DIPLOM.backend.article_analysis.utils.llm_requests import message_llm
+from milvus_db.utils import similarity_search, insert_article, retrieve_vector_by_ids
+from utils.llm_requests import message_llm
 
 EMBEDDING_DIM = 1024
 
@@ -48,8 +44,12 @@ def categorize_articles(article: dict, openai_client: openai.OpenAI, assistant):
     article_text = [article['title']]
     article_text.extend(article['paragraphs'])
     article_text = {'article': ' '.join(article_text).strip()}
-    categories = message_llm({'article_text': article_text}, assistant=assistant, client=openai_client, verbose=True)['ids']
-    return categories
+    try:
+        categories = message_llm({'article_text': article_text}, assistant=assistant, client=openai_client, verbose=True)['ids']
+        return categories
+    except:
+        print('Failed to message LLM')
+        return []
 
 
 

@@ -12,6 +12,5 @@ class Category(Base):
     name = Column(String(255))
     description = Column(String(511))
 
-    # Relationships
     articles = relationship("FactcheckCategory", back_populates="category")
     weekly_stats = relationship("WeeklyStats", back_populates="categories")

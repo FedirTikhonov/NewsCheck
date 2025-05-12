@@ -125,10 +125,14 @@ def scrape_espreso(scraping_delay=0.25):
                 })
             else:
                 return article_data
+    return article_data
 
 
 if __name__ == "__main__":
     start = time.time()
-    print(scrape_espreso(scraping_delay=0.25))
+    articles = scrape_espreso(scraping_delay=2.5)
+    print(len(articles))
+    for i in range(len(articles)):
+        print(articles[i]['title'])
     end = time.time()
     print(end - start)

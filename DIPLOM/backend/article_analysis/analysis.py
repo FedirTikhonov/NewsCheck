@@ -10,20 +10,21 @@ from datetime import date
 from sqlalchemy import create_engine, and_, or_, func, asc
 from sqlalchemy.orm import sessionmaker
 
+from article_scraping.stopfake import scrape_stopfake
+from article_scraping.voxukraine import scrape_voxukraine
+from utils.llm_requests import message_llm
+from utils.schemas import MetricSchema, CategoryResponseSchema, DigestTextResponseSchema
+from utils.semantic_analysis import generate_recommendations, categorize_articles
+from article_scraping.scraping import scrape_news, scrape_fact_check_articles
+from postgres_db.models.Article import Article
+from postgres_db.models.Paragraph import Paragraph
+from postgres_db.models.Category import Category
+from postgres_db.models.FactCheckCategory import FactcheckCategory
+from postgres_db.models.WeeklyStats import WeeklyStats
+from postgres_db.models.WeeklyReport import WeeklyReport
 
-from DIPLOM.backend.article_analysis.utils.llm_requests import message_llm
-from DIPLOM.backend.article_analysis.utils.schemas import MetricSchema, CategoryResponseSchema, DigestTextResponseSchema
-from DIPLOM.backend.article_analysis.utils.semantic_analysis import generate_recommendations, categorize_articles
-from DIPLOM.backend.article_analysis.article_scraping.scraping import scrape_news, scrape_fact_check_articles
-from DIPLOM.backend.article_analysis.postgres_db.models.Article import Article
-from DIPLOM.backend.article_analysis.postgres_db.models.Paragraph import Paragraph
-from DIPLOM.backend.article_analysis.postgres_db.models.Category import Category
-from DIPLOM.backend.article_analysis.postgres_db.models.FactCheckCategory import FactcheckCategory
-from DIPLOM.backend.article_analysis.postgres_db.models.WeeklyStats import WeeklyStats
-from DIPLOM.backend.article_analysis.postgres_db.models.WeeklyReport import WeeklyReport
 
-
-EMBEDDING_DIM = 512
+EMBEDDING_DIM = 1024
 
 
 def generate_analysis_for_news(articles_lst: List, verbose=False, return_values=True):
@@ -77,8 +78,11 @@ def generate_analysis_for_news(articles_lst: List, verbose=False, return_values=
             article.add_paragraph(paragraph, paragraph_num)
         for source_num, source in enumerate(scraped_article['sources']):
             article.add_source(source, source_num)
-        metric = message_llm(article=scraped_article, client=openai_client, assistant=metric_assistant, verbose=verbose)
-        article.add_metric(metric)
+        try:
+            metric = message_llm(article=scraped_article, client=openai_client, assistant=metric_assistant, verbose=verbose)
+            article.add_metric(metric)
+        except Exception as e:
+            print('Failed to save metrics to article')
         recommended_articles = generate_recommendations(article=scraped_article,
                                                         article_id=article.id,
                                                         voyageai_client=voyageai_client,
@@ -235,13 +239,16 @@ def update_recommendations():
         print("Update process completed")
 
 
-def create_weekly_stats():
+def create_weekly_stats(current_date=None):
     load_dotenv()
     engine = create_engine(os.environ["DATABASE_URL"])
     Session = sessionmaker(bind=engine, autoflush=False, autocommit=False)
     session = Session()
     categories = session.query(Category).all()
-    today = datetime.date.today()
+    if current_date:
+        today = current_date
+    else:
+        today = datetime.date.today()
     seven_days_ago = today - datetime.timedelta(days=7)
     for category in categories:
         query = (
@@ -313,29 +320,20 @@ def create_weekly_report():
             'text': article_text,
             'timestamp': str(article.published_at)
         })
-
-    digest = message_llm(request_body, assistant=digest_article_assistant, client=openai_client, verbose=True)['digest_text']
-
-    weekly_report = WeeklyReport(
-        digest_date=today,
-        digest_text=digest
-    )
-
-    session.add(weekly_report)
-    session.commit()
-    session.close()
+    try:
+        digest = message_llm(request_body, assistant=digest_article_assistant, client=openai_client, verbose=True)['digest_text']
+        weekly_report = WeeklyReport(
+            digest_date=today,
+            digest_text=digest)
+        session.add(weekly_report)
+        session.commit()
+        session.close()
+    except Exception as e:
+        print(f"Error adding weekly report")
+        session.rollback()
+        session.close()
 
 
 if __name__ == '__main__':
-    # print("Scraping articles")
-    # articles_one = [scrape_news(delay=0.25)]
-    # generate_analysis_for_news(articles_one, verbose=True)
-    # factcheck_articles_for_last_week = scrape_fact_check_articles(delay=24 * 8, verbose=True)
-    # generate_analysis_for_fact_checkers([factcheck_articles_for_last_week])
-    # create_weekly_stats()
     create_weekly_report()
-    # print("Waiting")
-    # time.sleep(15*60)
-    # articles_two = [scrape_news(delay=0.25)]
-    # generate_analysis_for_news(articles_two, verbose=True)
-    # update_recommendations()
+

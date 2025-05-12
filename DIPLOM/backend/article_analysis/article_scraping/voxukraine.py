@@ -3,7 +3,7 @@ import requests
 from bs4 import BeautifulSoup
 from datetime import datetime, timezone, timedelta
 import dateutil.parser
-from DIPLOM.backend.article_analysis.article_scraping.espreso import month_verbal_to_num
+from .espreso import month_verbal_to_num
 
 
 def voxukraine_to_ISO(date: str):
@@ -60,6 +60,7 @@ def scrape_voxukraine(scraping_delay=48):
                 })
             else:
                 return article_data
+    return article_data
 
 
 if __name__ == "__main__":

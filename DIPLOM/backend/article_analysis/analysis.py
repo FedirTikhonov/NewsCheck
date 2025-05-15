@@ -2,20 +2,14 @@ import openai
 import voyageai
 import os
 import datetime
-import time
-import json
 from typing import List
 from dotenv import load_dotenv
-from datetime import date
 from sqlalchemy import create_engine, and_, or_, func, asc
 from sqlalchemy.orm import sessionmaker
 
-from article_scraping.stopfake import scrape_stopfake
-from article_scraping.voxukraine import scrape_voxukraine
 from utils.llm_requests import message_llm
 from utils.schemas import MetricSchema, CategoryResponseSchema, DigestTextResponseSchema
 from utils.semantic_analysis import generate_recommendations, categorize_articles
-from article_scraping.scraping import scrape_news, scrape_fact_check_articles
 from postgres_db.models.Article import Article
 from postgres_db.models.Paragraph import Paragraph
 from postgres_db.models.Category import Category

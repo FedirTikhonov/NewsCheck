@@ -1,5 +1,3 @@
-import voyageai
-import os
 from dotenv import load_dotenv
 from pymilvus import connections, Collection, FieldSchema, CollectionSchema, DataType, utility
 

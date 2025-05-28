@@ -66,65 +66,68 @@ def scrape_espreso(scraping_delay=0.25):
         article_hrefs.append(href)
     article_data = []
     for href in article_hrefs:
-        driver.get(href)
-        body = driver.find_element(By.TAG_NAME, 'body')
-        header_section = body.find_element(By.CLASS_NAME, 'header_current_article')
-        title = header_section.find_element(By.CLASS_NAME, 'text-title').text.replace('\xa0', ' ').strip()
-        time_tag = header_section.find_element(By.CLASS_NAME, 'news__author_date')
-        date = time_tag.find_element(By.CLASS_NAME, 'news__author_date__date').text
-        time = time_tag.find_element(By.CLASS_NAME, 'news__author_date__time').text
-        timestamp = date + ' ' + time
-        timestamp = timestamp.replace(',', '')
-        timestamp = espreso_to_ISO(timestamp)
-        paragraphs_tags = []
-        article_section = body.find_element(By.CLASS_NAME, 'content_current_article')
-        paragraphs_tags.append(article_section.find_element(By.TAG_NAME, 'h2'))
-        li_paragraphs = article_section.find_elements(By.TAG_NAME, 'li')
-        paragraphs_tags.extend(li_paragraphs)
-        news_content = article_section.find_element(By.CLASS_NAME, 'news-content')
-        paragraphs = news_content.find_elements(By.TAG_NAME, 'p')
-        paragraphs_tags.extend(paragraphs)
-        sources = []
-        paragraphs_text = []
-        exception_texts = ["This is a modal window.",
-                           "Beginning of dialog window. Escape will cancel and close the window.",
-                           "End of dialog window.",
-                           "Chapters",
-                           "descriptions off, selected",
-                           "subtitles settings, opens subtitles settings dialog",
-                           "subtitles off, selected",
-                           ]
-        for paragraph in paragraphs_tags:
-            html = paragraph.get_attribute('outerHTML')
-            soup = BeautifulSoup(html, 'html.parser')
-            text = soup.get_text()
-            text = text.replace(' ', ' ').strip()
-            text = text.replace('\xa0', ' ')
-            if text not in exception_texts and not text.startswith('Читайте також:') and len(text) != 0:
-                paragraphs_text.append(text)
-            try:
-                links = paragraph.find_elements(By.TAG_NAME, 'a')
-                for link in links:
-                    source_url = link.get_attribute('href')
-                    if source_url:
-                        sources.append(source_url)
-            except Exception as e:
-                pass
-        if href is not None and timestamp is not None and title is not None and paragraphs_text is not None and sources is not None:
-            article_time = dateutil.parser.isoparse(timestamp)
-            current_time = datetime.now(timezone.utc)
-            one_hour_ago = current_time - timedelta(hours=scraping_delay)
-            if article_time >= one_hour_ago:
-                article_data.append({
-                    'outlet': 'espreso',
-                    'href': href,
-                    'timestamp': timestamp,
-                    'title': title,
-                    'paragraphs': paragraphs_text,
-                    'sources': sources
-                })
-            else:
-                return article_data
+        try:
+            driver.get(href)
+            body = driver.find_element(By.TAG_NAME, 'body')
+            header_section = body.find_element(By.CLASS_NAME, 'header_current_article')
+            title = header_section.find_element(By.CLASS_NAME, 'text-title').text.replace('\xa0', ' ').strip()
+            time_tag = header_section.find_element(By.CLASS_NAME, 'news__author_date')
+            date = time_tag.find_element(By.CLASS_NAME, 'news__author_date__date').text
+            time = time_tag.find_element(By.CLASS_NAME, 'news__author_date__time').text
+            timestamp = date + ' ' + time
+            timestamp = timestamp.replace(',', '')
+            timestamp = espreso_to_ISO(timestamp)
+            paragraphs_tags = []
+            article_section = body.find_element(By.CLASS_NAME, 'content_current_article')
+            paragraphs_tags.append(article_section.find_element(By.TAG_NAME, 'h2'))
+            li_paragraphs = article_section.find_elements(By.TAG_NAME, 'li')
+            paragraphs_tags.extend(li_paragraphs)
+            news_content = article_section.find_element(By.CLASS_NAME, 'news-content')
+            paragraphs = news_content.find_elements(By.TAG_NAME, 'p')
+            paragraphs_tags.extend(paragraphs)
+            sources = []
+            paragraphs_text = []
+            exception_texts = ["This is a modal window.",
+                               "Beginning of dialog window. Escape will cancel and close the window.",
+                               "End of dialog window.",
+                               "Chapters",
+                               "descriptions off, selected",
+                               "subtitles settings, opens subtitles settings dialog",
+                               "subtitles off, selected",
+                               ]
+            for paragraph in paragraphs_tags:
+                html = paragraph.get_attribute('outerHTML')
+                soup = BeautifulSoup(html, 'html.parser')
+                text = soup.get_text()
+                text = text.replace(' ', ' ').strip()
+                text = text.replace('\xa0', ' ')
+                if text not in exception_texts and not text.startswith('Читайте також:') and len(text) != 0:
+                    paragraphs_text.append(text)
+                try:
+                    links = paragraph.find_elements(By.TAG_NAME, 'a')
+                    for link in links:
+                        source_url = link.get_attribute('href')
+                        if source_url:
+                            sources.append(source_url)
+                except Exception as e:
+                    pass
+            if href is not None and timestamp is not None and title is not None and paragraphs_text is not None and sources is not None:
+                article_time = dateutil.parser.isoparse(timestamp)
+                current_time = datetime.now(timezone.utc)
+                one_hour_ago = current_time - timedelta(hours=scraping_delay)
+                if article_time >= one_hour_ago:
+                    article_data.append({
+                        'outlet': 'espreso',
+                        'href': href,
+                        'timestamp': timestamp,
+                        'title': title,
+                        'paragraphs': paragraphs_text,
+                        'sources': sources
+                    })
+                else:
+                    return article_data
+        except Exception as e:
+            print('Failed to scrape an article from espreso.tv')
     return article_data
 
 

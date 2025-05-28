@@ -1,0 +1,708 @@
+"user": Could you recommend any english war-related sources? They are only supposed to be scrapable. By the way, aren\'t modern embedding models(such as text-tembedding-3) capable of embedding ukrainian language too?
+
+"gpt-4.1":
+Absolutely, let's address both of your queries in detail:
+
+---
+
+## 1. **English War-Related Sources (Scrapable)**
+
+Here are some reputable sources that provide near real-time war reporting, fact-checking, and open-source intelligence, which are typically scrapable (web/RSS):
+
+### **A. Open-Source Investigators & War-Focused Outlets**
+
+1. **Bellingcat**
+   - [Website](https://www.bellingcat.com/)
+   - Renowned for digital forensics and OSINT on conflict zones (including Ukraine). They often publish investigative reports on current events, with source imagery and data you can scrape.
+
+2. **The Institute for the Study of War (ISW)**
+   - [Website](https://www.understandingwar.org/)
+   - Provides daily updates and military situation reports. Their "Ukraine Conflict Updates" are detailed and structured, easy to scrape.
+
+3. **Oryx**
+   - [Website](https://www.oryxspioenkop.com/)
+   - Documents visually-confirmed equipment losses in Ukraine (very data-centric, tabular format). The main content can be scraped.
+
+4. **Live Universal Awareness Map (Liveuamap)**
+   - [Website](https://liveuamap.com/)
+   - Interactive map with real-time war event aggregation. While scraping systematically is complex, their events in the side panel are structured and parsable.
+
+5. **Crisis Group**
+   - [Website](https://www.crisisgroup.org/)
+   - Analysis on global conflicts, including Ukraine. Some content is exclusively for subscribers.
+
+6. **Reuters Fact Check** / **AFP Fact Check** / **AP Fact Check**
+   - [Reuters](https://www.reuters.com/fact-check/)
+   - [AFP](https://factcheck.afp.com/)
+   - [AP](https://apnews.com/hub/ap-fact-check)
+   - International news and fact-checking, often with a section for Ukraine/Russia conflict misinformation. Their fact checks are published as standard articles.
+
+7. **StopFake ENGLISH**
+   - [Website](https://www.stopfake.org/en/)
+   - The English version of StopFake, relevant for fact-checks and summaries about the war for an international audience.
+
+8. **Euromaidan Press**
+   - [Website](https://euromaidanpress.com/)
+   - Ukraine-focused, in English, covers war developments and disinfo narratives.
+
+9. **Ukraine Crisis Media Center (UCMC)**
+   - [Website](https://uacrisis.org/en/)
+   - Daily war updates in English.
+
+### **B. OSINT-focused Twitter (now X) Feeds** (Can be scraped using social media APIs or third parties)
+- @GeoConfirmed, @UAWeapons, @MotolkoHelp, @KyleJGlen, etc.—these often provide debunking, geolocating, and real-time info.
+
+---
+
+### **Scrapability Considerations**
+- Most of the above sources have standard/accessible HTML. Bellingcat, ISW, Oryx, StopFake, and Reuters are straightforward.
+- Be mindful of robots.txt; for academic, research, and anti-misinformation purposes, light scraping is often permissible.
+- Where possible, use **RSS feeds** (Oryx and others support RSS).
+
+---
+
+## 2. **Modern Embedding Models and Ukrainian Language**
+
+**Yes, you are correct!**
+Modern embedding models, especially large multilingual ones, are **very capable** of supporting Ukrainian.
+
+### **Examples:**
+- **OpenAI's `text-embedding-3*` models** ([documentation](https://platform.openai.com/docs/guides/embeddings))
+    - These are trained on a wide range of languages, including Ukrainian, and perform semantic search and similarity tasks **with solid accuracy** for Ukrainian texts.
+    - For cross-language vector similarity (e.g., matching a Ukrainian article with an English or Russian fact check), models like `text-embedding-3-large` or `text-embedding-ada-002` are currently industry leaders.
+
+- **Google’s LaBSE** ([LaBSE on TensorFlow Hub](https://tfhub.dev/google/LaBSE/1))
+    - Specifically designed for cross-lingual sentence embeddings.
+    - Supports Ukrainian, and is robust for semantic search across many languages.
+
+- **XLM-Roberta / SentenceTransformers - Multilingual Models**
+    - Open-source, good performance, can be run on your own infrastructure.
+
+**TL;DR:**
+If you use OpenAI's `text-embedding-3` models (or similar top-tier alternatives), you will have **excellent support for embedding Ukrainian text** for retrieval and semantic analysis.
+
+---
+
+## **Summary Table**
+
+| Model/Service            | Ukrainian Support | Good for Cross-lingual? | API/Hosted?   |
+|--------------------------|------------------|-------------------------|---------------|
+| text-embedding-3         | Yes (very good)  | Yes (strong)            | OpenAI API    |
+| LaBSE                    | Yes              | Yes (strong)            | Self-host/GCP |
+| XLM-R Multilingual       | Yes              | Yes                     | HuggingFace   |
+
+---
+
+## **Final Recommendations:**
+
+- **English war-related sources** like ISW, Bellingcat, Oryx, StopFake (EN), and Reuters Fact Check are easily scrapable and reliable.
+- **Modern embedding models** (including OpenAI's) *do* support Ukrainian well, so you can confidently use them for your semantic search architecture in a multilingual fact-checking ecosystem.
+
+If you need sample code for scraping, data structuring, embedding, or cross-language semantic search, just ask!
+
+"user": Actually, I may have ran into a problem. Although my initial idea was to check some news articles for lies with fact-checking organisations, it seems like articles are not very
+susceptible to disinformation, because almost all disinformation is propagated through social media, not news outlets. I know I have some features present in my potential app,
+but what else could I add with fact checking? Maybe I could sometimes insert some fact-checking articles as a trusted news source?
+
+"gpt-4.1": Great observations! The **disinformation landscape** in Ukraine and worldwide has indeed shifted, with **the vast majority of lies and misleading content spreading via social media**, Telegram channels, and messengers rather than mainstream news portals. However, **fact-checking** and credibility analysis are *still valuable*—you just need to adjust your approach for **maximum impact and user relevance**.
+
+## 1. **How to Add Fact-Checking Value Beyond Article-to-Article Comparison**
+
+Here are **practical, high-impact ideas** for your platform—that go beyond just comparing news articles to existing fact-checks:
+
+---
+
+### **A. “Fact-Checked News Digest” or “Disinfo Watch”**
+
+- **Feature:** Alongside top/breaking headlines, have a curated “Fact-Checker’s Digest” section.
+- **Details:** This section highlights the **latest fact-checks** from top organizations (StopFake, VoxCheck, Reuters, etc.), even if they address rumors from social media, Telegram, or viral videos.
+- **Benefit:** Users see what’s being debunked *right now*—antidote to rumors.
+
+---
+
+### **B. “Mythbuster Inserts” as News Context**
+
+- **Feature:** When aggregating news articles about major stories (e.g., a missile strike, political decision), automatically inject small “Mythbuster” boxes with fact-checked relevant rumors.
+  - *Example:* Right below a credible news article:
+    “⛔ *Rumor circulating on Telegram about [topic] has been debunked by StopFake – see details [link].*”
+- **Benefit:** Proactively inoculate users before rumors catch on.
+
+---
+
+### **C. “Trending Disinfo Explorer”**
+
+- **Feature:** Interactive and regularly updated module showing the most viral/frequent misinformation topics tracked by Ukrainian and global fact-checkers.
+  - Could include: “Most recent Telegram rumors,” “Top 5 debunked war videos this week,” etc.
+- **Benefit:** Prepares users to spot and ignore current propaganda campaigns—even if they encounter them elsewhere.
+
+---
+
+### **D. **“Social Media/Rumor Radar”** (Optional Advanced Feature)
+
+- **Feature:** Use APIs, manual monitoring, or open-source datasets (like [Hoaxy](https://hoaxy.osome.iu.edu/)) to highlight *the rumors and viral claims that are currently spreading*—with live debunking status.
+- **Benefit:** Bridges the gap between mainstream news and the social media info-wars.
+
+---
+
+### **E. “Fact Check First!” Sidebar**
+
+- **Feature:** Dedicated section on your homepage/side panel with a rotating feed of the *latest* from major Ukrainian and international fact-checkers—even if the origin is social media or government spokespersons.
+- **Benefit:** Better placement/exposure for corrective info.
+
+---
+
+### **F. Trust Ratings/Badges for Articles and Outlets**
+
+- **Feature:** Instead of only flagging articles as true or false, implement “Trust badges” based on:
+  - Consistent record of factual reporting
+  - Transparent sourcing (links/citations)
+  - Coverage by independent fact-checkers
+- **Benefit:** Gives users a **quick way to spot high-credibility content**—even if it hasn’t been explicitly fact-checked yet.
+
+---
+
+### **G. Educational Microcontent**
+
+- **Feature:** Occasionally insert “Did You Know?” fact-checking tips, e.g.:
+  - “How to spot a fake video”
+  - “Why reverse image search works”
+  - “Common war-related hoaxes explained”
+- **Benefit:** Builds media literacy—which is proven to help resist disinfo.
+
+---
+
+### **H. “Verified War Video” Feed**
+
+- **Feature:** Highlight videos and photos that have been *independently geolocated and verified* by OSINT groups (Bellingcat, GeoConfirmed, etc.).
+- **Benefit:** Users see what’s *really* confirmed—countering shock content and fakes.
+
+---
+
+## 2. **Why These Features Are Effective**
+
+- **Fact-checking is most powerful at the rumor/meme/social media level**—but *news aggregators have credibility.* If you bring those insights into a news context, you make them more visible to users looking for reliable information.
+- **Injecting fact-checks into news context** (as an extra or sidebar—rather than the main article) aligns with *actual* disinfo flows.
+- **Educational material** helps users spot the next wave of fakes themselves—multiplies your positive impact.
+
+---
+
+## 3. **Technical Implementation Tips**
+
+- **RSS and site scraping** is ideal for pulling the *latest fact-checks*.
+- **Keyword/semantic tagging**: Use topic matching to inject myth-busting content near related news.
+- **UI/UX**: Make “Myth Buster” and “Trending Disinfo” *highly visible*, maybe in a colored callout box or sidebar.
+
+---
+
+## 4. **Summary Table: Fact-Checking Feature Ideas**
+
+| Feature Name            | Description                                | User Value                        |
+|-------------------------|--------------------------------------------|-----------------------------------|
+| Fact-Checked Digest     | Latest verified/debunked rumors            | Stay updated, fight FOMO          |
+| Mythbuster Inserts      | Inline debunking/context boxes in news     | Real-time correction, transparency|
+| Trending Disinfo Radar  | Interactive dashboard of viral lies        | Awareness, prepare for fakes      |
+| Fact-Check First Sidebar| Feed of debunks from trusted orgs          | Fast access to reliable info      |
+| Trust Badges            | Quick credibility indicators               | “At-a-glance” trust verification  |
+| Verified Visuals        | Collection of authenticated war media      | Fight visual disinfo              |
+| Media Literacy Tips     | Rotating educational snippets              | Empower and educate               |
+
+---
+
+## 5. **Final Thought**
+
+You’re absolutely right: **don’t restrict “fact-checking” to news-to-news comparisons.** Be a bridge between the social media rumor mill and credible news—with real-time mythbusting, trust building, and user empowerment.
+
+If you’d like, I can help you with:
+- **Feed aggregation or NLP tagging code**
+- **UI mockups for these features**
+- **Partnership outreach to fact-checkers**
+- Or anything else technical/organizational
+
+Just let me know!
+
+"user": alright, I would like to make a prompt for grading an article for the following:
+- credibility of the sources, basically, so from what kind of person does the info come from. I guess it should be in the following order, but I am not sure about this
+   * anonymous source - lowest credibility grade
+   * a confirmed person who has no expertise
+   * a real person with no information on his expertise (using LLM's own knowledge for that too)
+   * a real person with some expertise, but no official recognition (basically an online expert kindof)
+   * a real person with confirmed expertise as well as a status of an involved person (so in a war, a military commander or secretary of defense, a government official for an political problem, etc.)
+
+- emotional tone, basically gauging emotionality of the article with language, and something else
+- factuality, how much does the article refer to events that happened, rather than speculative and other
+- clickbaitness/sensationalism in the title of the article
+
+I guess I should also mention how my articles are presented, so here is an example of an article in a json format:
+{'outlet': 'hromadske',
+ 'href': 'https://hromadske.ua/viyna/243732-u-chornomu-mori-areshtuvaly-sudno-tinyovoho-flotu-rf-iz-kradenym-zernom-z-okupovanoho-krymu',
+  'timestamp': '2025-04-25T17:14:00+03:00',
+   'title': 'У\xa0Чорному морі арештували судно «тіньового» флоту рф\xa0із краденим зерном з окупованого Криму',
+    'paragraphs': [
+    'Служба безпеки та\xa0Державна прикордонна служба затримали в\xa0Чорному морі судно, яке вивезло з\xa0окупованого Криму 5 тисяч тонн зерна.',
+    'Про це повідомляють СБУ та ДПСУ.', 'Судно затримали у внутрішніх водах України. За даними слідства, наприкінці 2024 року воно вивезло з порту Севастополя 5 тисяч тонн української пшениці, викраденої з тимчасово окупованої території півдня України.',
+    'Щоб приховати походження вантажу, екіпаж ходив під прапором однієї з азійських країн — так працює «тіньовий флот» рф, поянсили у ДПСУ та СБУ.', 'Під час обшуку на борту виявили документи, навігаційне обладнання та інші докази причетності до незаконного перевезення.',
+    'Зараз судно арештували, а екіпаж передали правоохоронцям для проведення процесуальних дій.'
+    ],
+    'sources': [
+    'https://ssu.gov.ua/novyny/sbu-areshtuvala-sudno-tinovoho-flotu-rf-yake-vyvezlo-z-krymu-5-tys-tonn-nahrabovanoho-ukrainskoho-zerna',
+    'https://www.facebook.com/DPSUkraine/posts/pfbid02Gxn6VxgumqDXgefFdogsdmLKPpGfMkBfQcff3MfFA4SKtHpTLfrBecs2DeH12Jn3l'
+    ]
+ }
+
+This is a temporary format with which I want to work. I am not using any images for now.
+
+With the article structure and described metrics, I want you to write a draft for a system prompt, in ukrainian, which would satisfy the current limits of the article and other things.
+
+"gpt-4.1":
+Ось приклад системного промпту українською мовою для LLM, який буде аналізувати статтю у запропонованому JSON-форматі за вашими критеріями:
+
+---
+
+**СИСТЕМНИЙ ПРОМПТ**
+
+Ти — аналітик новинних статей, який отримує інформацію у форматі JSON з такими полями: outlet (назва видання), href (посилання), timestamp (дата і час публікації), title (заголовок), paragraphs (масив абзаців зі змістом статті), sources (масив посилань на джерела, які вказані в статті).
+
+Твоє завдання — обʼєктивно оцінити статтю за такими критеріями:
+
+---
+
+**1. Достовірність джерел (Credibility of Sources)**
+
+Оціни, наскільки надійні джерела, на які спирається стаття (перераховані у полі sources та згадані у тексті). Класифікуй основні джерела інформації одним із наступних рівнів:
+
+1. Анонімне джерело (найнижча достовірність).
+2. Встановлена (реальна) особа без експертизи (наприклад, випадковий свідок, місцевий житель).
+3. Встановлена особа з невідомою експертизою (інформації про фах бракує).
+4. Особа з експертизою, але без офіційного статусу (наприклад, незалежний аналітик).
+5. Профільний експерт/офіційна особа/посадовець із дотичним до теми статусом (наприклад, представник правоохоронних органів, військовий командир, урядовець).
+
+Аргументуй, до якого рівня належать ключові джерела цієї статті (наприклад, служби, державні установи чи посадовці).
+
+**2. Тональність статті (Emotional Tone)**
+
+Оціни рівень емоційності мови статті за наступною шкалою: нейтральна, дещо емоційна, дуже емоційна (наприклад, використання сильних емоційних епітетів, риторичних запитань, закликів тощо). Поясни свій вибір на основі тексту.
+
+**3. Фактичність (Factuality)**
+
+Визнач, наскільки дані у статті спираються на підтверджені факти (конкретні дати, події, дії органів влади або офіційних організацій) чи містять здебільшого припущення, оцінки або чутки. Оціни за шкалою:
+- 1 – майже лише припущення/без достатніх фактів,
+- 2 – переважно припущення, є кілька фактів,
+- 3 – збалансовано: факти й припущення,
+- 4 – переважають перевірені факти,
+- 5 – лише перевірені та конкретні факти.
+
+**4. Сенсаційність/Clickbaitність заголовка (Clickbait/Sensationalism in the Title)**
+
+Проаналізуй заголовок на предмет використання сенсаційної, перебільшеної або інтригуючої лексики, яка може штучно привернути увагу (наприклад, використання слів "шок", "неймовірно", незвичних обертів мови). Оціни заголовок за шкалою:
+- 1 – дуже сенсаційний/клікбейтний,
+- 2 – помірно сенсаційний,
+- 3 – переважно нейтральний.
+
+---
+
+**ФОРМАТ ВІДПОВІДІ (українською):**
+
+```json
+{
+  "джерела": {
+    "рівень_достовірності": <цифра від 1 до 5>,
+    "пояснення": "<коротка аргументація>"
+  },
+  "тональність": {
+    "рівень": "<нейтральна/дещо емоційна/дуже емоційна>",
+    "пояснення": "<короткий аналіз>"
+  },
+  "фактичність": {
+    "рівень": <цифра від 1 до 5>,
+    "пояснення": "<чому саме такий рівень>"
+  },
+  "сенсаційність_заголовка": {
+    "рівень": <цифра від 1 до 3>,
+    "пояснення": "<аналіз формулювань заголовка>"
+  }
+}
+```
+
+Аналізуй лише на основі наданого контенту. Якщо деяких даних бракує, зазнач це у поясненнях.
+
+---
+
+**Коротко:**
+- Використовуй лише доступну у JSON інформацію.
+- Використовуй власні знання для оцінки експертизи джерел (наприклад, чи є служба відома офіційною).
+- Усі висновки коротко обґрунтовуй.
+
+---
+
+Якщо потрібно доповнити промпт додатковими критеріями або прикладами — дай знати!
+
+"user": alright, I need some help with creating a database for everything as well as setting the pipeline for article scraping and analysis.
+
+So, I want you to give my view on how it should go and how my schema should look like in both databases, and you will respond on whether what I do is correct,
+and give me some advice on everything.
+
+1) Pipeline
+
+ At first, I scrape all the articles, and store them in temporary json objects.
+ Then, I perform metric analysis (emotional tone, factuality, etc.) on these articles, and also store them in a json.
+ After that, I perform semantic analysis on these articles, this entails
+    - Vectorizing these articles
+    - Uploading them to the milvus database
+    - Conducting multiple semantic searches
+        - First, on the entire article, without title, to find the most similar articles for recommendation
+        - Second, on the title of the article + first two paragraphs, find 5 most similar articles.
+          If the articles are within a certain not big timeframe and are on the same topic, but from different outlets,
+          they can be described as "another look" on the same issue from a different publisher
+ Another process will be connected with collecting investigations from fact-checkers. There will be no vectorization here,
+ but what I want to do is to categorize these investigations, and then show the total number of each categories' investigations over time
+ on a chart, so that users will be able to see which disinformation campaigns are currently trending.
+
+ So, as to how I think my schema should look like:
+
+ Postgres:
+ - news
+    - id
+    - title
+    - href
+    - text
+    - sources
+    - outlet
+    - metric_id
+    - milvus
+
+ - metric
+    - metric_id
+    - emotionality
+    - factuality
+    - credibility
+    - clickbaitness
+
+ - category
+    - category_id
+    - category_name
+    - category_description
+
+ - factcheck_category (like
+    - fact_checking_id (from news)
+    - category_id (from category)
+
+ (Maybe I will also implement a user table, but that is for later)
+
+ Milvus:
+
+  vectorized_article_collection:
+   - article_id
+   - postgres_id
+   - full_text_embedding
+   - beginning_embedding
+   - article_text
+   - article_embedding
+
+
+ That's it for schema. Can you tell me if you can redo it a bit better? I want to go with this structure and with these features,
+ so don't add anything drastically new.
+
+ "gpt-4.1":
+Your project pipeline and database schema design are very well thought out for a first implementation! You’ve captured the core needs for a quality news aggregation, semantic search, and article/fact-check monitoring system.
+
+Below is a review, critique, and some concrete recommendations to make things cleaner, more scalable, and ready for later expansion.
+
+---
+
+# 1. Pipeline Review
+
+Your pipeline steps are good and logical! Here’s a recap:
+1. Scrape articles → store as temporary JSON.
+2. Run metric analysis (LLM) → store metrics.
+3. Vectorize articles/titles/first-paragraphs → store embeddings in Milvus.
+4. Run semantic searches in Milvus:
+   - For recommendations (full article).
+   - For title + first two paragraphs → aggregate similar articles on one topic.
+5. Fact-check pipeline: collect/categorize investigations, show stats per category over time.
+   - (No vector DB for fact-checks for now.)
+
+**This pipeline makes sense and is modular**—good job.
+
+---
+
+# 2. Schema Analysis and Recommendations
+
+### A. Postgres
+
+#### news
+Current design:
+- id, title, href, text, sources, outlet, metric_id, milvus
+
+Recommendation:
+- Use consistent id names (`id`, not news_id if possible, to avoid confusion); but if you prefer, use news_id everywhere.
+- Consider splitting sources into a child table if you plan to query by source, or keep as JSONB/array if not.
+- milvus is ambiguous. Since Milvus stores the embeddings, you just need to store a *foreign key/reference* (`milvus_id`) or, for most projects, use the same id in both DBs.
+- Add columns for timestamp, language, and status (for pipeline processing state).
+
+#### metric
+Good!
+- Consider using news_id as a *foreign key* instead of metric_id in news if mapping is 1-to-1.
+- If the mapping can be 1-to-many (e.g., versioning metrics), keep your structure.
+
+#### category
+Solid.
+
+#### factcheck_category
+- Table name could be news_factcheck_category for clarity (shows mapping between news and fact-checking category).
+
+#### Fact-check investigations
+- If you have investigations not tied directly to a news article, consider a factcheck_investigation table as the source objects. Each can be linked to categories, and optionally as a news_id if mapped to a specific news item.
+
+---
+
+### B. Milvus
+
+You’re on track, but:
+- Milvus can store whatever metadata you want (as a payload/fields), but its primary focus is the embeddings + a unique ID.
+- Don’t store the raw text in Milvus unless you want super-fast independent retrieval in the vector DB. It’s usually best to store only embeddings + IDs in Milvus, and keep the text/metadata in Postgres.
+
+Fields:
+- article_id (same as Postgres id for easy cross-reference)
+- embedding_type (if you want both "full_text" and "beginning", you might have one entry per type, or two fields; see below)
+- embedding_vector (Main vector!)
+
+If you want to store both full text and title+first-two-paragraphs embeddings:
+
+Option 1: One collection per type
+  - vectorized_article_bodies (article id, body embedding)
+  - vectorized_article_beginnings (article id, title+first-two-paragraphs embedding)
+
+Option 2: One collection with type column
+  - id, article_id, embedding_type ("body", "beginning"), embedding_vector
+
+*(Most teams use Option 2 for flexibility.)*
+
+---
+
+## 3. Schema Suggestion (Refined for Clarity, Scalability)
+
+### A. Postgres Tables
+
+#### news
+| Column         | Type      | Description                              |
+| -------------- | --------- | ---------------------------------------- |
+| id             | PK, int   | Unique news article ID                   |
+| title          | text      | Article title                            |
+| href           | text      | Link to article online                   |
+| outlet         | text      | Name of news outlet                      |
+| text           | text      | Full article text                        |
+| sources        | jsonb/array | List of source URLs (or normalized)   |
+| timestamp      | datetime  | Publication time                         |
+| language       | text      | "uk", "en", etc                          |
+| status         | text      | Ingested/processed/error/archived        |
+| metric_id      | FK, int   | Link to metrics analysis                 |
+| ...            | ...       | (other metadata as needed)               |
+
+#### metric
+| metric_id      | PK, int   |
+| news_id        | FK, int   |
+| emotionality   | int       |
+| factuality     | int       |
+| credibility    | int       |
+| clickbaitness  | int       |
+| ...            | ...       |
+
+#### category
+| category_id    | PK, int   |
+| category_name  | text      |
+| category_description | text |
+
+#### factcheck_category
+| id             | PK, int   |
+| news_id        | FK, int   |
+| category_id    | FK, int   |
+| (add factcheck_investigation_id, if not 1:1 with `news`) |
+
+#### factcheck_investigation (if needed)
+| factcheck_id   | PK, int   |
+| title          | text      |
+| summary        | text      |
+| source_url     | text      |
+| date           | datetime  |
+| category_id    | FK, int   |
+
+---
+
+### B. Milvus Structure
+
+Option 2 recommended:
+Single collection, with type and minimal duplication.
+
+| milvus_id   | article_id (PK) | embedding_type | vector_embedding | timestamp      |
+| ----------- | --------------- | -------------- | --------------- | -------------- |
+| int/uuid    | int             | text ("body"/"beginning") | array[float] | datetime      |
+
+- This allows you to, for each article:
+    - Retrieve by article id (for all vectors),
+    - Search for specific type (all "title+beginning" vectors),
+    - Add more types later if needed (e.g., "conclusion" or "quote").
+
+---
+
+# 4. Technical/Pipeline Advice
+
+- Ingestion phases/status: Consider adding a status column (raw, metrics, vectorized, indexed) so you can reprocess/unify articles as you iterate.
+- Embeddings: Always track which embedding model/version you used (newer models may require a new DB column for `embedding_model_version`).
+- Fact-check pipeline: If you decide to vectorize factchecks in the future, having a separate Milvus collection for those will help.
+
+---
+
+# 5. Summary Table (TL;DR Changes)
+
+| Table/DB         | Main Change                                    | Why                                                |
+|------------------|------------------------------------------------|----------------------------------------------------|
+| news (Postgres)  | Add timestamp, language, status columns  | Flex for filtering, status tracking, multi-lang     |
+| metric           | FK from news → metric / 1:1 or 1:many           | Simple result retrieval                            |
+| category         | -                                              | Good as is                                         |
+| factcheck_cat    | Prefixed name, link to investigation if needed  | Clarity, future-proofing                           |
+| Milvus           | Add embedding_type column; no need to store text | Store only vectors/IDs, keep Postgres as source |
+| Both             | Make article_id primary join key              | Eases integration                                  |
+
+---
+
+# 6. Final Confirmation
+
+- Your schema and process are solid!
+- Most changes are about normalization, flexibility, and clear joining between Postgres and Milvus.
+- Pipeline plan is industry-ready and future proof.
+
+---
+
+## ☑️ You can proceed with this approach!
+Implement as described, and feel confident to iterate as you prototype and learn more from your data.
+
+If you want:
+- *Sample SQL or ORM models for the schema*
+- *Example ETL scripts for the ingest/vectorization/indexing process*
+- *Detailed advice on chunking/embedding pipelines*
+
+Just ask!
+
+"user":
+Thank you!
+I have a question, you say that Milvus collection shouldn't have two vectors in the same row, why?
+Also, the way my articles are stored, I have a list of paragraphs, and a list of sources for each article. In this case, should I have separate article_paragraph and article_source tables?
+
+
+You're welcome! I'll carefully address both of your excellent follow-up questions.
+
+---
+
+## 1. **Milvus: Why Not Store Two Vectors in the Same Row?**
+
+**Short Answer:**
+Milvus (and most vector databases) are optimized for fast, large-scale similarity search over individual vector fields, not arrays of vectors per row. Having more than one vector per row can make retrieval, filtering, and especially similarity search, more complex and less efficient. Here's why:
+
+### **Details:**
+
+- **Vector index:** Milvus indexes each vector embedding in a specific column (field). If you have two vectors per row (say, `full_text_embedding` and `beginning_embedding`), you cannot run a single similarity search (e.g., "find top 5 similar vectors") over both at once. You must tell Milvus whether to search "full_text_embedding," "beginning_embedding," etc.—otherwise, it won't know which to use for your query.
+
+- **Scalability:** Keeping only one vector per row allows you to scale to more embedding types in the future, e.g., summary vectors, quote vectors, etc., without changing the schema.
+
+- **Filtering/search:** When all vectors (even those representing different parts of the article) share a unified structure—with one vector per row and a type column (e.g., `embedding_type`)—it’s easy to filter/search only the ones you want.
+
+### **Schema Example (Recommended):**
+| milvus_id | article_id | embedding_type    | embedding_vector      | ... |
+|-----------|------------|------------------|----------------------|-----|
+| 1001      |      77    | "full_text"      | [0.12, ..., 0.53]    |     |
+| 1002      |      77    | "beginning"      | [0.05, ..., 0.98]    |     |
+| 1003      |      88    | "full_text"      | [0.11, ..., 0.22]    |     |
+
+This way:
+- To find similar articles by body: filter for `embedding_type = "full_text"`
+- To find similar by beginning: filter for `embedding_type = "beginning"`
+- To add more types: just add more rows!
+
+**Summary:**
+➡️ **Store one vector per row, use a type column,** because it's how vector DBs are designed for retrieval/filtering and future extensibility.
+
+---
+
+## 2. **Should You Have Separate `article_paragraph` and `article_source` Tables?**
+
+Since each article can have **multiple paragraphs** and **multiple sources** (one-to-many relationships), there are two main options:
+
+### **A. Separate Tables (Fully Normalized, Best for Querying)**
+**Recommended if** you want to query/filter/analyze paragraphs & sources **individually** (e.g., keyword analysis, paragraph-based retrieval, advanced analytics):
+
+**Table: article_paragraph**
+| id         | article_id | paragraph_number | text           |
+|------------|------------|-----------------|----------------|
+|    1       |    77      |      1          | "Text here"    |
+|    2       |    77      |      2          | "..."          |
+
+**Table: article_source**
+| id         | article_id | source_url                         |
+|------------|------------|------------------------------------|
+|    1       |     77     | "https://source..."                |
+|    2       |     77     | "https://another.source..."        |
+
+- **Pros:** Maximum query flexibility; can handle complex joins and analytics.
+- **Cons:** A bit more complex to insert/fetch article as a whole.
+
+---
+
+### **B. Array/JSON Field in Main Table (Denormalized, Simpler for Ingestion)**
+**Recommended if** you almost always need the whole article and rarely search/filter on paragraphs/sources:
+
+**Table: news (partial)**
+| id         | ...    | paragraphs(json/array)         | sources(json/array)              |
+|------------|--------|-------------------------------|----------------------------------|
+|    77      | ...    | ["Paragraph 1", ...]           | ["https://...", "..."]           |
+
+- **Pros:** Easier and faster for simple loads/dumps if you always fetch full article in one read.
+- **Cons:** Difficult/impossible to query paragraphs or sources individually (e.g., "find all articles where any source contains X").
+
+---
+
+### **Best Practice for Your Use Case**
+
+**Start Simple:**
+- If your initial use case is just presenting full articles and sources, **JSONB/array fields are fine** (especially in Postgres).
+- If/when you need **advanced querying on paragraphs or sources** (such as paragraph-based retrieval, or searching for all articles referencing a particular source URL), **migrate to separate child tables**.
+
+#### **Hybrid approach:** (often best for MVPs)
+- **Store as array/JSON field** for simple ingestion and presentation.
+- **Also create separate table(s)** for sources if you foresee **analytics or deduplication** (e.g., see how many articles cite a given source).
+
+---
+
+## **Summary Table**
+
+| Option        | When to Use                                   | Pros                  | Cons         |
+|---------------|-----------------------------------------------|-----------------------|--------------|
+| Separate tables | You need to query/filter paragraphs / sources | Flexible, scalable    | More joins   |
+| JSONB/array   | For simple, full-article CRUD + show only      | Easier, fast loading  | Less flexible|
+
+---
+
+### **What do most teams do?**
+- For **sources:** often normalized to separate table if deduplication or popularity analytics is a goal.
+- For **paragraphs:** usually stored as array (unless you need per-paragraph search/annotations).
+
+---
+
+## **Actionable Advice**
+- **Sources:** Use a separate table (`article_source`)—even for MVP, because you may want to track frequent sources or flag suspicious ones.
+- **Paragraphs:** Start as an array/JSONB in `news`; if you later want per-paragraph search, migrate to a normalized table.
+
+---
+
+## **TL;DR**
+
+- **Milvus:** One vector per row, use a type column. This enables fast filtering, extensibility, and aligns with Milvus indexing paradigm.
+- **Postgres:**
+    - **Sources:** Make a separate table for `article_source`.
+    - **Paragraphs:** OK to start with an array/JSON; later consider normalization only if needed for advanced search/annotation.
+
+**If you want:**
+- Example SQL schemas/code for any tables
+- Sample ETL for extraction/loading
+Just ask!
+
+You’re on an excellent track—these refinements will help keep your architecture clean and maintainable.

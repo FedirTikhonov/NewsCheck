@@ -6,20 +6,13 @@ import dateutil.parser
 
 
 def scrape_stopfake(scraping_delay=48):
-    pages = ["https://www.stopfake.org/uk/category/context-ua/",
-             "https://www.stopfake.org/uk/category/context-ua/page/2/",
-             "https://www.stopfake.org/uk/category/context-ua/page/3/",
-             "https://www.stopfake.org/uk/category/context-ua/page/4/",
-             "https://www.stopfake.org/uk/category/context-ua/page/5/",
-             "https://www.stopfake.org/uk/category/context-ua/page/6/",
-             "https://www.stopfake.org/uk/category/context-ua/page/7/",]
     article_data = []
-    for page_url in pages:
-        page = requests.get(page_url)
-        soup = BeautifulSoup(page.content, "html.parser")
-        feed_list = soup.find("div", class_='td-ss-main-content')
-        articles = feed_list.find_all("div", class_='td_module_10 td_module_wrap td-animation-stack')
-        for article in articles:
+    page = requests.get('https://www.stopfake.org/uk/category/novyny-ua/page/7/')
+    soup = BeautifulSoup(page.content, "html.parser")
+    feed_list = soup.find("div", class_='td-ss-main-content')
+    articles = feed_list.find_all("div", class_='td_module_10 td_module_wrap td-animation-stack')
+    for article in articles:
+        try:
             href = article.find('a')['href']
             timestamp = article.find('time', class_='entry-date updated td-module-date')['datetime']
             article_page = requests.get(href)
@@ -55,9 +48,11 @@ def scrape_stopfake(scraping_delay=48):
                     })
                 else:
                     return article_data
+        except Exception as e:
+            print('Failed to scrape an article from stopfake')
     return article_data
 
 
 if __name__ == "__main__":
-    articles = scrape_stopfake(scraping_delay=10000)
+    articles = scrape_stopfake(scraping_delay=400)
     print(len(articles))

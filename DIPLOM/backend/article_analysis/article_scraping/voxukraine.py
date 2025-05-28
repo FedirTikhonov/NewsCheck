@@ -22,44 +22,47 @@ def scrape_voxukraine(scraping_delay=48):
     articles = feed_list.find_all("article", class_='post-info')
     article_data = []
     for article in articles:
-        href = article.find('a')['href']
-        time_tag = article.find('div', class_='post-info__date')
-        time_text = time_tag.get_text().strip()
-        timestamp = voxukraine_to_ISO(time_text)
-        article_page = requests.get(href)
-        soup = BeautifulSoup(article_page.content, "html.parser")
-        title_tag = soup.find('h1', class_='underline underline--large item-title base-color')
-        title = title_tag.get_text().replace('\xa0', ' ').strip()
-        paragraphs_list = []
-        paragraph_content = soup.find('div', class_='content-wrapper')
-        paragraphs = paragraph_content.find_all('p')
-        sources = []
-        for paragraph in paragraphs:
-            text = paragraph.get_text()
-            text = text.replace(' ', ' ')
-            text = text.replace('\xa0', ' ')
-            paragraphs_list.append(text)
-            links = paragraph.find_all('a')
-            for link in links:
-                source_url = link['href']
-                if source_url:
-                    sources.append(source_url)
-        if href is not None and timestamp is not None and title is not None and paragraphs_list is not None and sources is not None:
-            print(timestamp)
-            article_time = dateutil.parser.isoparse(timestamp)
-            current_time = datetime.now(timezone.utc)
-            one_hour_ago = current_time - timedelta(hours=scraping_delay)
-            if article_time >= one_hour_ago:
-                article_data.append({
-                    'outlet': 'voxukraine',
-                    'href': href,
-                    'timestamp': timestamp,
-                    'title': title,
-                    'paragraphs': paragraphs_list,
-                    'sources': sources
-                })
-            else:
-                return article_data
+        try:
+            href = article.find('a')['href']
+            time_tag = article.find('div', class_='post-info__date')
+            time_text = time_tag.get_text().strip()
+            timestamp = voxukraine_to_ISO(time_text)
+            article_page = requests.get(href)
+            soup = BeautifulSoup(article_page.content, "html.parser")
+            title_tag = soup.find('h1', class_='underline underline--large item-title base-color')
+            title = title_tag.get_text().replace('\xa0', ' ').strip()
+            paragraphs_list = []
+            paragraph_content = soup.find('div', class_='content-wrapper')
+            paragraphs = paragraph_content.find_all('p')
+            sources = []
+            for paragraph in paragraphs:
+                text = paragraph.get_text()
+                text = text.replace(' ', ' ')
+                text = text.replace('\xa0', ' ')
+                paragraphs_list.append(text)
+                links = paragraph.find_all('a')
+                for link in links:
+                    source_url = link['href']
+                    if source_url:
+                        sources.append(source_url)
+            if href is not None and timestamp is not None and title is not None and paragraphs_list is not None and sources is not None:
+                print(timestamp)
+                article_time = dateutil.parser.isoparse(timestamp)
+                current_time = datetime.now(timezone.utc)
+                one_hour_ago = current_time - timedelta(hours=scraping_delay)
+                if article_time >= one_hour_ago:
+                    article_data.append({
+                        'outlet': 'voxukraine',
+                        'href': href,
+                        'timestamp': timestamp,
+                        'title': title,
+                        'paragraphs': paragraphs_list,
+                        'sources': sources
+                    })
+                else:
+                    return article_data
+        except Exception as e:
+            print('Failed to scrape article from voxukraine')
     return article_data
 
 

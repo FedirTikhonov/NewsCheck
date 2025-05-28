@@ -28,43 +28,46 @@ def scrape_radiosvoboda(scraping_delay=0.25):
         article_hrefs.append(href)
     article_data = []
     for href in article_hrefs:
-        article_page = requests.get(href)
-        soup = BeautifulSoup(article_page.content, 'html.parser')
-        title = soup.find('h1', class_='title pg-title').get_text().replace('\xa0', ' ').strip()
-        timestamp = soup.find('time')['datetime']
-        paragraphs_tags = []
-        article_section = soup.find('div', class_='wsw')
-        paragraphs = article_section.find_all('p')
-        paragraphs_tags.extend(paragraphs)
-        sources = []
-        paragraphs_text = []
-        for paragraph in paragraphs_tags:
-            text = paragraph.get_text()
-            text = text.replace(' ', ' ').strip()
-            text = text.replace('\xa0', ' ')
-            if len(text) != 0:
-                paragraphs_text.append(text)
-            links = paragraph.find_all('a')
-            for link in links:
-                source_url = link['href']
-                if source_url:
-                    sources.append(source_url)
-        if href is not None and timestamp is not None and title is not None and paragraphs_text is not None and sources is not None:
-            article_time = dateutil.parser.isoparse(timestamp)
-            current_time = datetime.now(timezone.utc)
-            one_hour_ago = current_time - timedelta(hours=scraping_delay)
-            if article_time >= one_hour_ago:
-                article_data.append({
-                    'outlet': 'radiosvoboda',
-                    'href': href,
-                    'timestamp': timestamp,
-                    'title': title,
-                    'paragraphs': paragraphs_text,
-                    'sources': sources
-                })
-            else:
-                return article_data
-    # Implement the mechanism to check if the atricle has already been scraped
+        try:
+            article_page = requests.get(href)
+            soup = BeautifulSoup(article_page.content, 'html.parser')
+            title = soup.find('h1', class_='title pg-title').get_text().replace('\xa0', ' ').strip()
+            timestamp = soup.find('time')['datetime']
+            paragraphs_tags = []
+            article_section = soup.find('div', class_='wsw')
+            paragraphs = article_section.find_all('p')
+            paragraphs_tags.extend(paragraphs)
+            sources = []
+            paragraphs_text = []
+            for paragraph in paragraphs_tags:
+                text = paragraph.get_text()
+                text = text.replace(' ', ' ').strip()
+                text = text.replace('\xa0', ' ')
+                if len(text) != 0:
+                    paragraphs_text.append(text)
+                links = paragraph.find_all('a')
+                for link in links:
+                    source_url = link['href']
+                    if source_url:
+                        sources.append(source_url)
+            if href is not None and timestamp is not None and title is not None and paragraphs_text is not None and sources is not None:
+                article_time = dateutil.parser.isoparse(timestamp)
+                current_time = datetime.now(timezone.utc)
+                one_hour_ago = current_time - timedelta(hours=scraping_delay)
+                if article_time >= one_hour_ago:
+                    article_data.append({
+                        'outlet': 'radiosvoboda',
+                        'href': href,
+                        'timestamp': timestamp,
+                        'title': title,
+                        'paragraphs': paragraphs_text,
+                        'sources': sources
+                    })
+                else:
+                    return article_data
+        except Exception as e:
+            print('Failed to scrape a radiosvoboda article')
+    return article_data
 
 
 if __name__ == "__main__":

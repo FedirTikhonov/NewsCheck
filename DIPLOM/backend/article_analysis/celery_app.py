@@ -5,6 +5,8 @@ app = Celery('tasks',
              broker='redis://localhost:6379/0',
              include=['tasks'])
 
+import celery_montiroing
+
 # Configure the scheduler (beat)
 app.conf.beat_schedule = {
     # Task running every 15 minutes

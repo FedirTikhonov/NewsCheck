@@ -55,14 +55,14 @@ def scrape_fact_check_articles(verbose=False, return_values=True, delay=48):
     try:
         articles_voxukraine = scrape_voxukraine(scraping_delay=delay)
         all_articles.extend(articles_voxukraine)
-        print(f'Number of articles from StopFake articles: {len(articles_voxukraine)}')
+        print(f'Number of articles from VoxUkraine: {len(articles_voxukraine)}')
     except Exception as e:
         print('Failed to execute a voxukraine scraping function')
     try:
         articles_stopfake = scrape_stopfake(scraping_delay=delay)
         all_articles.extend(articles_stopfake)
         if verbose:
-            print(f'Number of articles from VoxUkraine: {len(articles_stopfake)}')
+            print(f'Number of articles from StopFake: {len(articles_stopfake)}')
     except Exception as e:
         print('Failed to execute a stopfake scraping function')
     scraping_time_end = time.time()
@@ -78,4 +78,4 @@ def scrape_fact_check_articles(verbose=False, return_values=True, delay=48):
 
 
 if __name__ == "__main__":
-    scrape_news(verbose=True, return_values=True, delay=1)
+    print(len(scrape_fact_check_articles(delay=10000)))

@@ -16,6 +16,7 @@ from postgres_db.models.Category import Category
 from postgres_db.models.FactCheckCategory import FactcheckCategory
 from postgres_db.models.WeeklyStats import WeeklyStats
 from postgres_db.models.WeeklyReport import WeeklyReport
+from article_scraping.scraping import scrape_fact_check_articles
 
 
 EMBEDDING_DIM = 1024
@@ -137,7 +138,7 @@ def generate_analysis_for_fact_checkers(articles_lst: List, verbose=False, retur
         for paragraph_num, paragraph in enumerate(scraped_article['paragraphs']):
             article.add_paragraph(paragraph, paragraph_num)
         for source_num, source in enumerate(scraped_article['sources']):
-            article.add_paragraph(source, source_num)
+            article.add_source(source, source_num)
         print(f'categorizing_article {article.title}')
         category_ids = categorize_articles(article=scraped_article, assistant=category_article_assistant,
                                            openai_client=openai_client)
@@ -291,11 +292,11 @@ def create_weekly_report():
 
     articles = session.query(Article).filter(
         and_(
-        (or_((Article.outlet == 'voxukraine'),
-             (Article.outlet == 'stopfake'))),
-        (Article.published_at <= today),
-        (Article.published_at >= seven_days_ago))
-    ).all()
+            Article.outlet == 'stopfake',
+            Article.published_at <= today,
+            Article.published_at >= seven_days_ago
+        )
+    ).limit(10).all()
 
     request_body = {'articles': []}
     for article in articles:
@@ -330,4 +331,3 @@ def create_weekly_report():
 
 if __name__ == '__main__':
     create_weekly_report()
-

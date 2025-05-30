@@ -7,7 +7,7 @@ import dateutil.parser
 
 def scrape_stopfake(scraping_delay=48):
     article_data = []
-    page = requests.get('https://www.stopfake.org/uk/category/novyny-ua/page/7/')
+    page = requests.get('https://www.stopfake.org/uk/category/novyny-ua/')
     soup = BeautifulSoup(page.content, "html.parser")
     feed_list = soup.find("div", class_='td-ss-main-content')
     articles = feed_list.find_all("div", class_='td_module_10 td_module_wrap td-animation-stack')

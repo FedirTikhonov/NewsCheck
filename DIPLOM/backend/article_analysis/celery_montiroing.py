@@ -4,7 +4,6 @@ from datetime import datetime
 from celery.signals import task_prerun, task_postrun
 import redis
 
-# Use the same Redis instance as your Celery broker
 redis_client = redis.Redis(host='localhost', port=6379, db=1)  # Using db=1 to separate from Celery
 
 

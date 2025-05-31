@@ -29,3 +29,6 @@ DIPLOM/__pycache__/__init__.cpython-312.pyc
 /DIPLOM/backend/article_analysis/milvus_db/__pycache__
 /DIPLOM/backend/article_analysis/utils/__pycache__
 /DIPLOM/code_dir/article_analysis/milvus_db/volumes
+/DIPLOM/documents
+/DIPLOM/frontend
+/DIPLOM/backend/.env

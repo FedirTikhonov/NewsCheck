@@ -42,7 +42,6 @@
                     @endforeach
                 </div>
 
-                <!-- Sources section -->
                 @if($factCheck->sources && $factCheck->sources->count() > 0)
                     <div class="mt-10 pt-6 border-t">
                         <h2 class="text-xl font-bold mb-4">Джерела</h2>

@@ -23,7 +23,7 @@
                     <div class="border-b last:border-b-0">
                         <div class="flex items-start p-4">
                             <div class="w-20 text-right text-gray-500 pr-6">
-                                {{ \Carbon\Carbon::parse($factCheck->published_at)->format('H:i') }}
+                                {{ \Carbon\Carbon::parse($factCheck->published_at)->format('d.m.y') }}
                             </div>
                             <div class="flex-grow">
                                 <h3 class="text-lg font-medium">

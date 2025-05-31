@@ -30,7 +30,7 @@
                     <div class="border-b last:border-b-0">
                         <div class="flex items-start p-4">
                             <div class="w-20 text-right text-gray-500 pr-6">
-                                {{ \Carbon\Carbon::parse($article->published_at)->format('H:i') }}
+                                {{ \Carbon\Carbon::parse($article->published_at)->format('d.m.y H:i') }}
                             </div>
                             <div class="flex-grow">
                                 <h3 class="text-lg font-medium">
@@ -55,8 +55,6 @@
                 {{ $articles->links() }}
             </div>
         </main>
-
-        <!-- Filter Modal -->
         <div id="filterModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
             <div class="bg-white rounded-2xl p-8 max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
                 <div class="flex justify-between items-center mb-6">
@@ -69,9 +67,6 @@
                 </div>
 
                 <form id="filterForm">
-                    <!-- This should replace the checkbox sections in your blade file -->
-
-                    <!-- Outlets Section -->
                     <div class="mb-8">
                         <h3 class="text-lg font-semibold mb-4">Видання</h3>
                         <div class="grid grid-cols-2 gap-3">
@@ -97,8 +92,6 @@
                             </div>
                         </div>
                     </div>
-
-                    <!-- Emotionality Section -->
                     <div class="mb-8">
                         <h3 class="text-lg font-semibold mb-4">Емоційне забарвлення</h3>
                         <div class="flex gap-4">
@@ -119,8 +112,6 @@
                             </div>
                         </div>
                     </div>
-
-                    <!-- Credibility Section -->
                     <div class="mb-8">
                         <h3 class="text-lg font-semibold mb-4">Достовірність джерел</h3>
                         <div class="px-4">
@@ -138,8 +129,6 @@
                             </div>
                         </div>
                     </div>
-
-                    <!-- Factuality Section -->
                     <div class="mb-8">
                         <h3 class="text-lg font-semibold mb-4">Фактичність</h3>
                         <div class="px-4">
@@ -157,8 +146,6 @@
                             </div>
                         </div>
                     </div>
-
-                    <!-- Clickbaitness Section -->
                     <div class="mb-8">
                         <h3 class="text-lg font-semibold mb-4">"Клікбейти"</h3>
                         <div class="px-4">
@@ -174,8 +161,6 @@
                             </div>
                         </div>
                     </div>
-
-                    <!-- Buttons -->
                     <div class="flex gap-4 pt-6">
                         <button type="button" id="resetSettings" class="px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-50">
                             Скасувати налаштування
@@ -240,6 +225,5 @@
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
     </style>
-
-    <script src="{{ asset('js/filter-modal.js') }}"></script>
+    <script src="resources/js/filter-modal.js"></script>
 @endsection

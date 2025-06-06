@@ -1,6 +1,4 @@
-document.addEventListener('DOMContentLoaded', function() {
-            console.log('DOM Content Loaded - Filter Modal Script Starting');
-
+    document.addEventListener('DOMContentLoaded', function() {
             const filterButton = document.getElementById('filterButton');
             const filterModal = document.getElementById('filterModal');
             const closeModal = document.getElementById('closeModal');
@@ -30,32 +28,17 @@ document.addEventListener('DOMContentLoaded', function() {
 
                 containers.forEach((container, index) => {
                     if (container.hasAttribute('data-listener-attached')) {
-                        console.log(`Container ${index} already has listener, skipping...`);
                         return;
                     }
 
                     const checkbox = container.querySelector('input[type="checkbox"]');
                     const visual = container.querySelector('.checkbox-visual');
 
-                    console.log(`Setting up container ${index}:`, {
-                        checkbox: checkbox,
-                        visual: visual,
-                        checkboxValue: checkbox?.value || 'NO VALUE'
-                    });
-
                     container.addEventListener('click', function(e) {
                         e.preventDefault();
                         e.stopPropagation();
 
-                        console.log(`Container ${index} clicked! Timestamp: ${Date.now()}`, {
-                            target: e.target,
-                            currentTarget: e.currentTarget,
-                            checkboxBefore: checkbox.checked
-                        });
-
                         checkbox.checked = !checkbox.checked;
-
-                        console.log(`Checkbox ${index} toggled to:`, checkbox.checked);
 
                         updateCheckboxVisual(checkbox, visual);
                     });
@@ -63,7 +46,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     container.setAttribute('data-listener-attached', 'true');
 
                     checkbox.addEventListener('change', function(e) {
-                        console.log(`Checkbox ${index} changed directly:`, checkbox.checked);
                         updateCheckboxVisual(checkbox, visual);
                     });
 
@@ -74,26 +56,14 @@ document.addEventListener('DOMContentLoaded', function() {
             }
 
             function updateCheckboxVisual(checkbox, visual) {
-                console.log('Updating checkbox visual:', {
-                    checked: checkbox.checked,
-                    visualElement: visual,
-                    currentClasses: visual.className
-                });
-
                 if (checkbox.checked) {
                     visual.classList.add('checked');
-                    console.log('Added "checked" class');
                 } else {
                     visual.classList.remove('checked');
-                    console.log('Removed "checked" class');
                 }
-
-                console.log('Visual classes after update:', visual.className);
             }
 
             function initializeSliders() {
-                console.log('Initializing sliders...');
-
                 const credibilityContainer = document.getElementById('credibilitySlider');
                 if (credibilityContainer && !credibilityContainer.hasAttribute('data-slider-initialized')) {
                     sliders.credibility = new DualRangeSlider(credibilityContainer, {
@@ -133,21 +103,16 @@ document.addEventListener('DOMContentLoaded', function() {
 
             if (filterButton && !filterButton.hasAttribute('data-listener-attached')) {
                 filterButton.addEventListener('click', function(e) {
-                    console.log('Filter button clicked!', e);
                     e.preventDefault();
                     e.stopPropagation();
                     showModal();
                     loadCurrentFilters();
                 });
                 filterButton.setAttribute('data-listener-attached', 'true');
-                console.log('Filter button listener attached');
-            } else {
-                console.log('Filter button not found or already has listener');
             }
 
             if (closeModal && !closeModal.hasAttribute('data-listener-attached')) {
                 closeModal.addEventListener('click', function(e) {
-                    console.log('Close modal clicked');
                     e.preventDefault();
                     e.stopPropagation();
                     hideModal();
@@ -158,7 +123,6 @@ document.addEventListener('DOMContentLoaded', function() {
             if (filterModal && !filterModal.hasAttribute('data-listener-attached')) {
                 filterModal.addEventListener('click', function(e) {
                     if (e.target === filterModal) {
-                        console.log('Modal background clicked');
                         hideModal();
                     }
                 });
@@ -167,11 +131,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
             if (resetSettings && !resetSettings.hasAttribute('data-listener-attached')) {
                 resetSettings.addEventListener('click', function(e) {
-                    console.log('Reset settings clicked');
                     e.preventDefault();
 
                     document.querySelectorAll('input[type="checkbox"]').forEach((checkbox, index) => {
-                        console.log(`Resetting checkbox ${index}`);
                         checkbox.checked = false;
                         const visual = checkbox.closest('.checkbox-container')?.querySelector('.checkbox-visual');
                         if (visual) visual.classList.remove('checked');
@@ -184,7 +146,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
             if (saveSettings && !saveSettings.hasAttribute('data-listener-attached')) {
                 saveSettings.addEventListener('click', function(e) {
-                    console.log('Save settings clicked');
                     e.preventDefault();
                     applyFilters();
                     hideModal();
@@ -193,11 +154,9 @@ document.addEventListener('DOMContentLoaded', function() {
             }
 
             function loadCurrentFilters() {
-                console.log('Loading current filters...');
                 const urlParams = new URLSearchParams(window.location.search);
 
                 const outlets = urlParams.getAll('outlets[]') || [];
-                console.log('Loading outlets:', outlets);
                 outlets.forEach(outlet => {
                     const checkbox = document.querySelector(`input[name="outlets[]"][value="${outlet}"]`);
                     if (checkbox) {
@@ -208,7 +167,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 });
 
                 const emotionality = urlParams.getAll('emotionality[]');
-                console.log('Loading emotionality:', emotionality);
                 emotionality.forEach(value => {
                     const checkbox = document.querySelector(`input[name="emotionality[]"][value="${value}"]`);
                     if (checkbox) {
@@ -232,17 +190,14 @@ document.addEventListener('DOMContentLoaded', function() {
             }
 
             function applyFilters() {
-                console.log('Applying filters...');
                 const form = document.getElementById('filterForm');
                 const formData = new FormData(form);
                 const urlParams = new URLSearchParams();
 
                 const outlets = formData.getAll('outlets[]');
-                console.log('Selected outlets:', outlets);
                 outlets.forEach(outlet => urlParams.append('outlets[]', outlet));
 
                 const emotionality = formData.getAll('emotionality[]');
-                console.log('Selected emotionality:', emotionality);
                 emotionality.forEach(value => urlParams.append('emotionality[]', value));
 
                 ['credibility', 'factuality', 'clickbaitness'].forEach(metric => {
@@ -257,15 +212,12 @@ document.addEventListener('DOMContentLoaded', function() {
                     }
                 });
 
-                console.log('Final URL params:', urlParams.toString());
 
                 const currentPath = window.location.pathname;
                 window.location.href = `${currentPath}?${urlParams.toString()}`;
             }
 
-            console.log('Starting initialization...');
             initFilterModal();
-            console.log('Initialization complete!');
 
             window.filterModalInitialized = true;
         });
@@ -320,7 +272,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 this.minHandle.addEventListener('mousedown', this.startDrag.bind(this, 'min'));
                 this.maxHandle.addEventListener('mousedown', this.startDrag.bind(this, 'max'));
 
-                // Bind global events
                 this.onDragBound = this.onDrag.bind(this);
                 this.stopDragBound = this.stopDrag.bind(this);
             }
